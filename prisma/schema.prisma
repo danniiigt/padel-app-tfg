@@ -40,8 +40,10 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
+    role          String    @default("USER")
     accounts      Account[]
     sessions      Session[]
+    pista         Pista[]
 }
 
 model VerificationToken {
@@ -50,4 +52,28 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Pista {
+    id          String   @id @default(cuid())
+    nombre      String
+    descripcion String
+    imagen      String
+    ubicacion   String
+    telefono    String
+    usuario     User     @relation(fields: [usuarioId], references: [id])
+    usuarioId   String
+    evento      Evento[]
+}
+
+model Evento {
+    id          String  @id @default(cuid())
+    nombre      String
+    descripcion String
+    precio      Decimal
+    fechaInicio String
+    fechaFin    String
+    ocupada     Boolean
+    pista       Pista?  @relation(fields: [pistaId], references: [id])
+    pistaId     String?
 }

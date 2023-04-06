@@ -5,8 +5,7 @@ export const lightTheme = createTheme({
     mode: "light",
 
     primary: {
-      main: "#2A628F",
-      light: "#3E92CC",
+      main: "#3454D1",
     },
 
     secondary: {
@@ -17,14 +16,19 @@ export const lightTheme = createTheme({
       main: "#76B041",
     },
 
+    // CREA EL COLOR INFO GRIS
+    info: {
+      main: "#999",
+    },
+
     background: {
       default: "#e5e7eb",
-      paper: "#fff",
+      paper: "#ffffff",
     },
 
     text: {
       primary: "#333",
-      secondary: "#fff",
+      secondary: "#999",
     },
   },
 });
