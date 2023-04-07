@@ -15,10 +15,10 @@ import Link from "next/link";
 
 const LoginPage = () => {
   return (
-    <Box height="100vh" width="100vw" display="flew">
+    <Box height="100vh" width="100vw" display="flex">
       <Box
         sx={{
-          width: "65%",
+          width: "100%",
           height: "100%",
           backgroundImage:
             "url(https://images.unsplash.com/photo-1526888935184-a82d2a4b7e67?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80)",
@@ -30,18 +30,21 @@ const LoginPage = () => {
       ></Box>
       <Box
         sx={{
-          width: "35%",
+          width: "30%",
+          minWidth: 500,
+          padding: "0 20px",
           height: "100%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "background.paper",
         }}
+        className="animate__animated animate__fadeIn"
       >
         <Box
           sx={{
             width: "100%",
-            maxWidth: 450,
+            maxWidth: 400,
           }}
         >
           <Box

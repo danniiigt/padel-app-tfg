@@ -19,7 +19,7 @@ const RegisterPage = () => {
     <Box height="100vh" width="100vw" display="flex">
       <Box
         sx={{
-          width: "65%",
+          width: "100%",
           height: "100%",
           backgroundImage:
             "url(https://images.unsplash.com/flagged/photo-1576972405668-2d020a01cbfa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1174&q=80)",
@@ -31,7 +31,9 @@ const RegisterPage = () => {
       ></Box>
       <Box
         sx={{
-          width: "35%",
+          width: "30%",
+          minWidth: 500,
+          padding: "0 20px",
           height: "100%",
           display: "flex",
           alignItems: "center",
@@ -39,11 +41,12 @@ const RegisterPage = () => {
           backgroundColor: "background.paper",
           borderBottom: "4px solid #3454D1",
         }}
+        className="animate__animated animate__fadeIn"
       >
         <Box
           sx={{
             width: "100%",
-            maxWidth: 450,
+            maxWidth: 400,
           }}
         >
           <Box
