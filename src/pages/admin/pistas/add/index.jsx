@@ -316,6 +316,7 @@ const AddPista = ({ user, step }) => {
             borderRadius: 1.5,
             boxShadow:
               "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+            borderTop: "3px solid #3454D1",
           }}
         >
           <Box>
@@ -388,6 +389,7 @@ const AddPista = ({ user, step }) => {
             borderRadius: 1.5,
             boxShadow:
               "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+            borderTop: "3px solid #3454D1",
           }}
         >
           <Box>
@@ -450,6 +452,11 @@ const AddPista = ({ user, step }) => {
 
 export const getServerSideProps = async (ctx) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
+
+  if (!session) {
+    return { redirect: { destination: "/" } };
+  }
+
   const { step } = ctx.query;
 
   const user = await prisma.user.findUnique({

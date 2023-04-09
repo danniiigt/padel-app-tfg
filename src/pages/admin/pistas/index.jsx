@@ -76,6 +76,11 @@ const PistasPage = ({ user }) => {
 
 export const getServerSideProps = async (ctx) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
+
+  if (!session) {
+    return { redirect: { destination: "/" } };
+  }
+
   const prisma = new PrismaClient();
 
   const user = await prisma.user.findUnique({
@@ -88,7 +93,7 @@ export const getServerSideProps = async (ctx) => {
     },
   });
 
-  if (!session || user.role !== "ADMIN") {
+  if (user.role !== "ADMIN") {
     return { redirect: { destination: "/" } };
   }
 

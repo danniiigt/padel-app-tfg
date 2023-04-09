@@ -362,6 +362,10 @@ const AdminPage = ({ user }) => {
 export const getServerSideProps = async (ctx) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
 
+  if (!session) {
+    return { redirect: { destination: "/" } };
+  }
+
   const user = await prisma.user.findUnique({
     where: {
       email: session?.user.email,

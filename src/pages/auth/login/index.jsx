@@ -81,7 +81,7 @@ const LoginPage = () => {
               size="medium"
               color="info"
               sx={{ textTransform: "none" }}
-              onClick={() => signIn("google")}
+              onClick={() => signIn("google", { callbackUrl: "/admin" })}
             >
               <img
                 src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png"
