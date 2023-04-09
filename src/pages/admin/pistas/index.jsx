@@ -1,4 +1,4 @@
-import { MainLayout } from "../layouts/MainLayout";
+import { MainLayout } from "../../../shared/layouts/MainLayout";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { PrismaClient } from "@prisma/client";
@@ -6,8 +6,6 @@ import { Box, Grid, Typography } from "@mui/material";
 import Link from "next/link";
 
 const PistasPage = ({ user }) => {
-  console.log(user);
-
   return (
     <MainLayout>
       <Box mt={4}>

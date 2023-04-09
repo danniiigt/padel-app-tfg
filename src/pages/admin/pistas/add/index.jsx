@@ -10,12 +10,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { MainLayout } from "../../layouts/MainLayout";
+import { MainLayout } from "../../../../shared/layouts/MainLayout";
 import { getServerSession } from "next-auth";
 import { PrismaClient } from "@prisma/client";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { useState } from "react";
-import { PistaItem } from "@/shared/PistaItem";
+import { PistaItem } from "@/shared/components/PistaItem";
 import { useRouter } from "next/router";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
@@ -377,8 +377,6 @@ export const getServerSideProps = async (ctx) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
   const prisma = new PrismaClient();
   const { step } = ctx.query;
-
-  console.log({ step });
 
   const user = await prisma.user.findUnique({
     where: {

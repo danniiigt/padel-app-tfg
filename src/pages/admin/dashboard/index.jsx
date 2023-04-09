@@ -1,5 +1,5 @@
 import { Badge, Box, Grid, Stack, Typography } from "@mui/material";
-import { MainLayout } from "../layouts/MainLayout";
+import { MainLayout } from "../../../shared/layouts/MainLayout";
 import {
   Chart as ChartJS,
   CategoryScale,

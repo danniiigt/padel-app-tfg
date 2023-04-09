@@ -3,8 +3,6 @@ import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
 
 export const PistaItem = ({ pista }) => {
-  console.log(pista);
-
   return (
     <Stack
       spacing={0}
