@@ -17,6 +17,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { PrismaClient } from "@prisma/client";
 import AddRoadIcon from "@mui/icons-material/AddRoad";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
+import prisma from "../../../../lib/prisma";
 
 ChartJS.register(
   CategoryScale,
@@ -360,7 +361,6 @@ const AdminPage = ({ user }) => {
 
 export const getServerSideProps = async (ctx) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
-  const prisma = new PrismaClient();
 
   const user = await prisma.user.findUnique({
     where: {

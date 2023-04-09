@@ -21,6 +21,7 @@ import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import prisma from "../../../../../lib/prisma";
 
 const AddPista = ({ user, step }) => {
   const router = useRouter();
@@ -55,6 +56,8 @@ const AddPista = ({ user, step }) => {
         });
       });
   };
+
+  console.log({ pistaForm, initialPistaForm });
 
   if (step == 1) {
     return (
@@ -370,12 +373,83 @@ const AddPista = ({ user, step }) => {
         </Box>
       </MainLayout>
     );
+  } else if (step == 3) {
+    return (
+      <MainLayout>
+        <Stack
+          mt={4}
+          spacing={12}
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{
+            backgroundColor: "background.paper",
+            p: "15px 20px",
+            borderRadius: 1.5,
+            boxShadow:
+              "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+          }}
+        >
+          <Box>
+            <Typography variant="h5" fontWeight={600}>
+              Añadir pista
+            </Typography>
+            <Typography noWrap>
+              Tienes un total de {user.pista.length} pistas
+            </Typography>
+          </Box>
+          <Box sx={{ width: "100%" }}>
+            <Stepper sx={{ width: "100%" }} activeStep={step - 1}>
+              {steps.map((label) => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </Box>
+        </Stack>
+
+        <Box
+          mt={3}
+          sx={{
+            backgroundColor: "background.paper",
+            p: "15px",
+            width: "fit-content",
+            borderRadius: 1.5,
+            boxShadow:
+              "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.005)",
+          }}
+        >
+          <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<ChevronLeftIcon />}
+            sx={{ mr: 2 }}
+            onClick={() => {
+              router.push(`/admin/pistas/add?step=${Number(step) - 1}`);
+            }}
+          >
+            Anterior
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            disableElevation
+            endIcon={<ChevronRightIcon />}
+            onClick={() => {
+              router.push(`/admin/pistas/add?step=${Number(step) + 1}`);
+            }}
+          >
+            Siguiente
+          </Button>
+        </Box>
+      </MainLayout>
+    );
   }
 };
 
 export const getServerSideProps = async (ctx) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
-  const prisma = new PrismaClient();
   const { step } = ctx.query;
 
   const user = await prisma.user.findUnique({
