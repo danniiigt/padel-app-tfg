@@ -1,0 +1,35 @@
+
+/* Path: src\themes\transitiondelays.css */
+
+.delay-125 {
+   animation-delay: 125ms;
+}
+
+.delay-250 {
+   animation-delay: 250ms;
+}
+
+.delay-375 {
+   animation-delay: 375ms;
+}
+
+.delay-500 {
+   animation-delay: 500ms;
+}
+
+.delay-625 {
+   animation-delay: 625ms;
+}
+
+.delay-750 {
+   animation-delay: 750ms;
+}
+
+.delay-875 {
+   animation-delay: 875ms;
+}
+
+.delay-1000 {
+   animation-delay: 1000ms;
+}
+

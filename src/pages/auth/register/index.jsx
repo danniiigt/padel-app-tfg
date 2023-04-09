@@ -13,6 +13,9 @@ import KeyOutlinedIcon from "@mui/icons-material/KeyOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import PersonIcon from "@mui/icons-material/Person";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 const RegisterPage = () => {
   return (
@@ -80,6 +83,7 @@ const RegisterPage = () => {
               size="medium"
               color="info"
               sx={{ textTransform: "none" }}
+              onClick={() => signIn("google")}
             >
               <img
                 src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png"
@@ -94,6 +98,7 @@ const RegisterPage = () => {
               size="medium"
               color="info"
               sx={{ textTransform: "none" }}
+              onClick={() => signIn("twitter")}
             >
               <img
                 src="https://seeklogo.com/images/T/twitter-2012-positive-logo-916EDF1309-seeklogo.com.png"
@@ -108,6 +113,7 @@ const RegisterPage = () => {
               size="medium"
               color="info"
               sx={{ textTransform: "none" }}
+              onClick={() => signIn("github")}
             >
               <img
                 src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
@@ -179,6 +185,20 @@ const RegisterPage = () => {
       </Box>
     </Box>
   );
+};
+
+// You should use getServerSideProps when:
+// - Only if you need to pre-render a page whose data must be fetched at request time
+export const getServerSideProps = async (ctx) => {
+  const session = await getServerSession(ctx.req, ctx.res, authOptions);
+
+  if (session) {
+    return { redirect: { destination: "/home" } };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default RegisterPage;

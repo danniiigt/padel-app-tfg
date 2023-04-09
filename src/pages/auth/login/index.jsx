@@ -12,6 +12,9 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import KeyOutlinedIcon from "@mui/icons-material/KeyOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Link from "next/link";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { signIn } from "next-auth/react";
 
 const LoginPage = () => {
   return (
@@ -78,6 +81,7 @@ const LoginPage = () => {
               size="medium"
               color="info"
               sx={{ textTransform: "none" }}
+              onClick={() => signIn("google")}
             >
               <img
                 src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png"
@@ -106,6 +110,7 @@ const LoginPage = () => {
               size="medium"
               color="info"
               sx={{ textTransform: "none" }}
+              onClick={() => signIn("github")}
             >
               <img
                 src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
@@ -162,6 +167,18 @@ const LoginPage = () => {
       </Box>
     </Box>
   );
+};
+
+export const getServerSideProps = async (ctx) => {
+  const session = await getServerSession(ctx.req, ctx.res, authOptions);
+
+  if (session) {
+    return { redirect: { destination: "/home" } };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default LoginPage;

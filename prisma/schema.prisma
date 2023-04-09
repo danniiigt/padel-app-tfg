@@ -35,15 +35,18 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String     @id @default(cuid())
     name          String?
-    email         String?   @unique
+    businessName  String?
+    email         String?    @unique
     emailVerified DateTime?
     image         String?
-    role          String    @default("USER")
+    role          String     @default("USER")
     accounts      Account[]
     sessions      Session[]
     pista         Pista[]
+    reserva       Reserva[]
+    registro      Registro[]
 }
 
 model VerificationToken {
@@ -55,25 +58,48 @@ model VerificationToken {
 }
 
 model Pista {
-    id          String   @id @default(cuid())
-    nombre      String
-    descripcion String
-    imagen      String
-    ubicacion   String
-    telefono    String
-    usuario     User     @relation(fields: [usuarioId], references: [id])
-    usuarioId   String
-    evento      Evento[]
+    id                String   @id @default(cuid())
+    nombre            String
+    descripcion       String
+    imagen            String
+    ubicacionLatitud  String
+    ubicacionLongitud String
+    telefono          String
+    usuario           User     @relation(fields: [usuarioId], references: [id])
+    usuarioId         String
+    evento            Evento[]
+}
+
+model Reserva {
+    id                String   @id @default(cuid())
+    fecha             DateTime
+    fechaModificacion DateTime
+    activa            Boolean
+    usuario           User     @relation(fields: [usuarioId], references: [id])
+    usuarioId         String
+    evento            Evento   @relation(fields: [eventoId], references: [id])
+    eventoId          String
 }
 
 model Evento {
-    id          String  @id @default(cuid())
+    id          String    @id @default(cuid())
     nombre      String
     descripcion String
     precio      Decimal
     fechaInicio String
     fechaFin    String
     ocupada     Boolean
-    pista       Pista?  @relation(fields: [pistaId], references: [id])
+    pista       Pista?    @relation(fields: [pistaId], references: [id])
     pistaId     String?
+    Reserva     Reserva[]
+}
+
+// CADA VEZ QUE EL USUARIO HAGA UNA ACCION SE REGISTRARA EN ESTA TABLA
+model Registro {
+    id          String   @id @default(cuid())
+    fecha       DateTime
+    accion      String // EJEMPLO: Se ha creado una pista
+    descripcion String // EJEMPLO: Se ha creado la pista con el nombre de "Pista 1"
+    usuario     User     @relation(fields: [usuarioId], references: [id])
+    usuarioId   String
 }

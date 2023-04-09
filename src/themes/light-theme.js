@@ -22,13 +22,30 @@ export const lightTheme = createTheme({
     },
 
     background: {
-      default: "#e5e7eb",
+      default: "#f3f4f6",
       paper: "#ffffff",
+      dark: "#1f1f1f",
     },
 
     text: {
       primary: "#333",
       secondary: "#999",
     },
+  },
+
+  typography: {
+    fontFamily: [
+      "Poppins",
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(","),
   },
 });
