@@ -1,5 +1,5 @@
-import React from "react";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { useCallback, useState } from "react";
 
 const containerStyle = {
   width: "100%",
@@ -8,16 +8,14 @@ const containerStyle = {
 };
 
 function MyComponent({ lat, lng }) {
-  if (!lat || !lng) return <></>;
-
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: "AIzaSyBvIp4w94o1HTQau0zKP4t9vUpH3a4usu8",
   });
 
-  const [map, setMap] = React.useState(null);
+  const [map, setMap] = useState(null);
 
-  const onLoad = React.useCallback(function callback(map) {
+  const onLoad = useCallback(function callback(map) {
     // This is just an example of getting and using the map instance!!! don't just blindly copy!
     const bounds = new window.google.maps.LatLngBounds({ lat, lng });
     map.fitBounds(bounds);
@@ -25,9 +23,11 @@ function MyComponent({ lat, lng }) {
     setMap(map);
   }, []);
 
-  const onUnmount = React.useCallback(function callback(map) {
+  const onUnmount = useCallback(function callback(map) {
     setMap(null);
   }, []);
+
+  if (!lat || !lng) return <></>;
 
   return isLoaded ? (
     <GoogleMap
