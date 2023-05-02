@@ -43,6 +43,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
 
 const AddPista = ({ user, step }) => {
+  user = JSON.parse(user);
+
   const router = useRouter();
 
   const initialPistaForm = {
@@ -992,7 +994,7 @@ export const getServerSideProps = async (ctx) => {
 
   return {
     props: {
-      user,
+      user: JSON.stringify(user),
       step: step || 1,
     },
   };

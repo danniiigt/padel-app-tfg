@@ -6,9 +6,9 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import AddRoadIcon from "@mui/icons-material/AddRoad";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import prisma from "../../../../lib/prisma";
-import { Charts } from "./components/Charts";
-import { DashboardButtons } from "./components/DashboardButtons";
-import { DashboardRegistros } from "./components/DashboardRegistros";
+import { Charts } from "../../../shared/components/Charts";
+import { DashboardButtons } from "../../../shared/components/DashboardButtons";
+import { DashboardRegistros } from "../../../shared/components/DashboardRegistros";
 
 const AdminPage = ({ user, registros }) => {
   user = JSON.parse(user);

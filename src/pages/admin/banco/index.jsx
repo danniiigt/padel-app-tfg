@@ -14,8 +14,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import AddIcon from "@mui/icons-material/Add";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
-import { DashboardDepositos } from "../dashboard/components/DashboardDepositos";
-import { DashboardRetiradas } from "../dashboard/components/DashboardRetiradas";
+import { DashboardDepositos } from "../../../shared/components/DashboardDepositos";
+import { DashboardRetiradas } from "../../../shared/components/DashboardRetiradas";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
