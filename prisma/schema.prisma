@@ -43,6 +43,7 @@ model User {
     image         String?
     role          String        @default("USER")
     saldo         Decimal       @default(0)
+    paypalId      String?
     accounts      Account[]
     sessions      Session[]
     pista         Pista[]

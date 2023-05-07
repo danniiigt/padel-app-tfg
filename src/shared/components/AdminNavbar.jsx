@@ -6,8 +6,12 @@ import {
   Breadcrumbs,
   Divider,
   IconButton,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
+  Stack,
   Toolbar,
   Tooltip,
   Typography,
@@ -19,9 +23,15 @@ import { signOut } from "next-auth/react";
 import Link from "next/link";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import HomeIcon from "@mui/icons-material/Home";
+import { useRouter } from "next/router";
+import LogoutIcon from "@mui/icons-material/Logout";
+import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import Person2Icon from "@mui/icons-material/Person2";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 export const AdminNavbar = ({ userImage, breadcrumbsItems }) => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const router = useRouter();
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -29,6 +39,10 @@ export const AdminNavbar = ({ userImage, breadcrumbsItems }) => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleRedirect = (url) => {
+    router.push(url);
   };
 
   return (
@@ -42,7 +56,9 @@ export const AdminNavbar = ({ userImage, breadcrumbsItems }) => {
             paddingX: "16px !important",
           }}
         >
-          <Box
+          <Stack
+            spacing={5}
+            direction="row"
             sx={{
               maxWidth: 1100,
               width: "100%",
@@ -60,6 +76,77 @@ export const AdminNavbar = ({ userImage, breadcrumbsItems }) => {
                 Admin
               </Link>
             </Typography>
+
+            <Stack direction="row" spacing={4}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  "&:hover": {
+                    color: "#eeee",
+                  },
+                  transition: "all 0.3s ease",
+                }}
+              >
+                <Link
+                  href="/admin/dashboard"
+                  style={{ color: "inherit", textDecoration: "none" }}
+                >
+                  Inicio
+                </Link>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  "&:hover": {
+                    color: "#eeee",
+                  },
+                  transition: "all 0.3s ease",
+                }}
+              >
+                <Link
+                  href="/admin/reservas"
+                  style={{ color: "inherit", textDecoration: "none" }}
+                >
+                  Reservas
+                </Link>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  "&:hover": {
+                    color: "#eeee",
+                  },
+                  transition: "all 0.3s ease",
+                }}
+              >
+                <Link
+                  href="/admin/pistas"
+                  style={{ color: "inherit", textDecoration: "none" }}
+                >
+                  Pistas
+                </Link>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  "&:hover": {
+                    color: "#eeee",
+                  },
+                  transition: "all 0.3s ease",
+                }}
+              >
+                <Link
+                  href="/admin/banco"
+                  style={{ color: "inherit", textDecoration: "none" }}
+                >
+                  Banco
+                </Link>
+              </Typography>
+            </Stack>
 
             <Box
               flexGrow={1}
@@ -94,6 +181,7 @@ export const AdminNavbar = ({ userImage, breadcrumbsItems }) => {
                 </IconButton>
               </Tooltip>
               <Menu
+                sx={{ mt: "35px" }}
                 id="menu-appbar"
                 anchorEl={anchorEl}
                 anchorOrigin={{
@@ -108,7 +196,24 @@ export const AdminNavbar = ({ userImage, breadcrumbsItems }) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Perfil</MenuItem>
+                <MenuItem onClick={() => handleRedirect("/admin/perfil")}>
+                  <ListItemIcon>
+                    <Person2Icon sx={{ mr: 2 }} />
+                  </ListItemIcon>
+                  <ListItemText>Perfil</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => handleRedirect("/soporte")}>
+                  <ListItemIcon>
+                    <SupportAgentIcon sx={{ mr: 2 }} />
+                  </ListItemIcon>
+                  <ListItemText>Soporte</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => handleRedirect("/admin/perfil")}>
+                  <ListItemIcon>
+                    <DashboardIcon sx={{ mr: 2 }} />
+                  </ListItemIcon>
+                  <ListItemText>Panel Control</ListItemText>
+                </MenuItem>
 
                 <Divider sx={{ marginY: "3px !important" }} />
 
@@ -118,11 +223,14 @@ export const AdminNavbar = ({ userImage, breadcrumbsItems }) => {
                     handleClose();
                   }}
                 >
-                  Cerrar sesión
+                  <ListItemIcon>
+                    <LogoutIcon sx={{ mr: 2 }} />
+                  </ListItemIcon>
+                  <ListItemText>Cerrar Sesión</ListItemText>
                 </MenuItem>
               </Menu>
             </Box>
-          </Box>
+          </Stack>
         </Toolbar>
       </AppBar>
       <Toolbar />
@@ -152,7 +260,10 @@ export const AdminNavbar = ({ userImage, breadcrumbsItems }) => {
                 <Typography
                   variant="body2"
                   color="text.secondary"
-                  sx={{ "&:hover": { color: "secondary.main" } }}
+                  sx={{
+                    "&:hover": { color: "#eeee" },
+                    transition: "all 0.3s ease",
+                  }}
                 >
                   <Link
                     style={{
@@ -174,7 +285,10 @@ export const AdminNavbar = ({ userImage, breadcrumbsItems }) => {
                       key={index}
                       variant="body2"
                       color="text.secondary"
-                      sx={{ "&:hover": { color: "secondary.main" } }}
+                      sx={{
+                        "&:hover": { color: "#eeee" },
+                        transition: "all 0.3s ease",
+                      }}
                     >
                       <Link
                         style={{ color: "inherit", textDecoration: "none" }}

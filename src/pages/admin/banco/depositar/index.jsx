@@ -44,7 +44,7 @@ const DepositarPage = ({ user }) => {
   ];
 
   return (
-    <MainLayout userImage={user.image} breadcrumbsItems={breadcrumbsItems}>
+    <MainLayout user={user} breadcrumbsItems={breadcrumbsItems}>
       <Stack
         sx={{
           marginTop: 5,
@@ -155,7 +155,7 @@ export const getServerSideProps = async (ctx) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
 
   if (!session) {
-    return { redirect: { destination: "/" } };
+    return { redirect: { destination: "/auth/login" } };
   }
 
   const user = await prisma.user.findUnique({
@@ -165,7 +165,7 @@ export const getServerSideProps = async (ctx) => {
   });
 
   if (!session || user.role !== "ADMIN") {
-    return { redirect: { destination: "/" } };
+    return { redirect: { destination: "/auth/login" } };
   }
 
   return {

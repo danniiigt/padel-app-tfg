@@ -83,7 +83,7 @@ const PistasPage = ({ user, pistas, eventos, reservas }) => {
   ];
 
   return (
-    <MainLayout userImage={user.image} breadcrumbsItems={breadcrumbsItems}>
+    <MainLayout user={user} breadcrumbsItems={breadcrumbsItems}>
       <Stack direction="row" spacing={2} mt={4} alignItems="center">
         <Box>
           <Typography
@@ -357,7 +357,7 @@ export const getServerSideProps = async (ctx) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
 
   if (!session) {
-    return { redirect: { destination: "/" } };
+    return { redirect: { destination: "/auth/login" } };
   }
 
   const prisma = new PrismaClient();

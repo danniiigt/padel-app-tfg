@@ -15,7 +15,7 @@ const AdminPage = ({ user, registros }) => {
   registros = JSON.parse(registros);
 
   return (
-    <MainLayout userImage={user.image}>
+    <MainLayout user={user}>
       <Stack
         direction="row"
         justifyContent="space-between"
@@ -109,7 +109,7 @@ const AdminPage = ({ user, registros }) => {
 
       <DashboardButtons />
 
-      <Grid container mt={1} spacing={3}>
+      <Grid container mt={1} mb={4} spacing={3}>
         <Grid
           item
           xs={8}
@@ -127,7 +127,7 @@ export const getServerSideProps = async (ctx) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
 
   if (!session) {
-    return { redirect: { destination: "/" } };
+    return { redirect: { destination: "/auth/login" } };
   }
 
   const user = await prisma.user.findUnique({
@@ -140,10 +140,13 @@ export const getServerSideProps = async (ctx) => {
     where: {
       usuarioId: user.id,
     },
+    orderBy: {
+      fecha: "desc",
+    },
   });
 
   if (!session || user.role !== "ADMIN") {
-    return { redirect: { destination: "/" } };
+    return { redirect: { destination: "/auth/login" } };
   }
 
   return {

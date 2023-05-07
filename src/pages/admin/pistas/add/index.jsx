@@ -198,7 +198,7 @@ const AddPista = ({ user, step }) => {
 
   if (step == 1) {
     return (
-      <MainLayout userImage={user.image} breadcrumbsItems={breadcrumbsItems}>
+      <MainLayout user={user} breadcrumbsItems={breadcrumbsItems}>
         <Stack
           mt={4}
           spacing={12}
@@ -489,7 +489,7 @@ const AddPista = ({ user, step }) => {
     );
   } else if (step == 2) {
     return (
-      <MainLayout>
+      <MainLayout user={user}>
         <Stack
           mt={4}
           spacing={12}
@@ -806,7 +806,7 @@ const AddPista = ({ user, step }) => {
     );
   } else if (step == 3) {
     return (
-      <MainLayout>
+      <MainLayout user={user}>
         <Stack
           mt={4}
           spacing={12}
@@ -973,7 +973,7 @@ export const getServerSideProps = async (ctx) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
 
   if (!session) {
-    return { redirect: { destination: "/" } };
+    return { redirect: { destination: "/auth/login" } };
   }
 
   const { step } = ctx.query;
@@ -989,7 +989,7 @@ export const getServerSideProps = async (ctx) => {
   });
 
   if (!session || user.role !== "ADMIN") {
-    return { redirect: { destination: "/" } };
+    return { redirect: { destination: "/auth/login" } };
   }
 
   return {

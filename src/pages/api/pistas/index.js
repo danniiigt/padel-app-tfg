@@ -75,7 +75,7 @@ const handlePostPista = async (req, res) => {
       data: {
         usuarioId,
         fecha: new Date(),
-        accion: `Se ha creado la pista ${nombre}}`,
+        accion: `Se ha creado la pista ${nombre}`,
         descripcion: `Se ha creado la pista ${nombre} con el id ${pista.id} y el usuarioId ${usuarioId}`,
       },
     });

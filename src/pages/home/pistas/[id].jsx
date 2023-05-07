@@ -1,11 +1,11 @@
+import { MainLayout } from "@/shared/layouts/MainLayout";
 import { Typography } from "@mui/material";
-import React from "react";
 
 const PistaPage = ({ id }) => {
   return (
-    <div>
+    <MainLayout>
       <Typography>Pista con Id {id}</Typography>
-    </div>
+    </MainLayout>
   );
 };
 

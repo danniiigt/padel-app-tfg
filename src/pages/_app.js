@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Box, LinearProgress } from "@mui/material";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 function Loading() {
   const router = useRouter();
@@ -50,9 +51,17 @@ export default function App({ Component, pageProps }) {
   return (
     <SessionProvider>
       <AppTheme>
-        <Loading />
-        <Component {...pageProps} />
-        <ToastContainer />
+        <PayPalScriptProvider
+          options={{
+            "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+            components: "buttons",
+            currency: process.env.NEXT_PUBLIC_PLATFORM_CURRENCY,
+          }}
+        >
+          <Loading />
+          <Component {...pageProps} />
+          <ToastContainer />
+        </PayPalScriptProvider>
       </AppTheme>
     </SessionProvider>
   );
