@@ -51,17 +51,9 @@ export default function App({ Component, pageProps }) {
   return (
     <SessionProvider>
       <AppTheme>
-        <PayPalScriptProvider
-          options={{
-            "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
-            components: "buttons",
-            currency: process.env.NEXT_PUBLIC_PLATFORM_CURRENCY,
-          }}
-        >
-          <Loading />
-          <Component {...pageProps} />
-          <ToastContainer />
-        </PayPalScriptProvider>
+        <Loading />
+        <Component {...pageProps} />
+        <ToastContainer />
       </AppTheme>
     </SessionProvider>
   );

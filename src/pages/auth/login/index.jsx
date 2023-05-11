@@ -14,9 +14,29 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const LoginPage = () => {
+  const { status } = useSession();
+  const router = useRouter();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const data = new FormData(e.target);
+      const email = data.get("email");
+      const password = data.get("password");
+
+      const res = await signIn("credentials", {
+        email,
+        password,
+        callbackUrl: `${window.location.origin}/admin`,
+      });
+    } catch (error) {}
+  };
+
   return (
     <Box height="100vh" width="100vw" display="flex">
       <Box
@@ -45,6 +65,8 @@ const LoginPage = () => {
         className="animate__animated animate__fadeIn"
       >
         <Box
+          component="form"
+          onSubmit={handleLogin}
           sx={{
             width: "100%",
             maxWidth: 400,
@@ -81,7 +103,11 @@ const LoginPage = () => {
               size="medium"
               color="info"
               sx={{ textTransform: "none" }}
-              onClick={() => signIn("google", { callbackUrl: "/admin" })}
+              onClick={() =>
+                signIn("google", {
+                  callbackUrl: `${window.location.origin}/admin`,
+                })
+              }
             >
               <img
                 src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png"
@@ -129,6 +155,7 @@ const LoginPage = () => {
               variant="outlined"
               placeholder="Correo electrónico"
               fullWidth
+              name="email"
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -143,6 +170,7 @@ const LoginPage = () => {
               variant="outlined"
               placeholder="Contraseña"
               type="password"
+              name="password"
               fullWidth
               InputProps={{
                 startAdornment: (
@@ -159,6 +187,7 @@ const LoginPage = () => {
               fullWidth
               sx={{ borderRadius: 3 }}
               disableRipple
+              type="submit"
             >
               Iniciar Sesión
             </Button>
@@ -170,7 +199,14 @@ const LoginPage = () => {
 };
 
 export const getServerSideProps = async (ctx) => {
-  const session = await getServerSession(ctx.req, ctx.res, authOptions);
+  const nextAuthSession = await getServerSession(ctx.req, ctx.res, authOptions);
+  let session = null;
+
+  if (nextAuthSession?.user?.user) {
+    session = nextAuthSession.user;
+  } else {
+    session = nextAuthSession;
+  }
 
   if (session) {
     return { redirect: { destination: "/home" } };

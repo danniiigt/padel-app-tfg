@@ -137,7 +137,14 @@ const PerfilPage = ({ user }) => {
 };
 
 export const getServerSideProps = async (ctx) => {
-  const session = await getServerSession(ctx.req, ctx.res, authOptions);
+  const nextAuthSession = await getServerSession(ctx.req, ctx.res, authOptions);
+  let session = null;
+
+  if (nextAuthSession?.user?.user) {
+    session = nextAuthSession.user;
+  } else {
+    session = nextAuthSession;
+  }
 
   if (!session) {
     return { redirect: { destination: "/auth/login" } };

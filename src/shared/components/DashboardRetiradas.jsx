@@ -42,7 +42,28 @@ export const DashboardRetiradas = ({ retiradas }) => {
               direction="row"
               justifyContent="space-between"
             >
-              <Typography variant="body2">{registro.accion}</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="body2">
+                  -{" "}
+                  {Intl.NumberFormat("es-ES", {
+                    style: "currency",
+                    currency: "EUR",
+                  }).format(registro.amount)}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color={
+                    registro.estado == "Pendiente"
+                      ? "#d18111"
+                      : registro.estado == "Completada"
+                      ? "success.main"
+                      : "error.main"
+                  }
+                >
+                  {registro.estado}
+                </Typography>
+              </Stack>
+
               <Typography variant="body2">
                 {
                   // FORMAT DATE TO THIS: 20:11 18/04/2023

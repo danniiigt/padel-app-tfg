@@ -28,6 +28,8 @@ export const ClientNavBar = ({ user }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const router = useRouter();
 
+  console.log(user);
+
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -144,7 +146,7 @@ export const ClientNavBar = ({ user }) => {
                   onClick={handleMenu}
                 >
                   <Avatar
-                    alt="Tu imagen"
+                    alt={user.name}
                     src={user.image}
                     sx={{ width: 30, height: 30 }}
                   />
@@ -166,6 +168,23 @@ export const ClientNavBar = ({ user }) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
+                <MenuItem disableTouchRipple disableRipple>
+                  <Stack>
+                    <ListItemText>{user.name}</ListItemText>
+                    <ListItemText>
+                      <Typography variant="body2" fontSize={13}>
+                        Saldo:{" "}
+                        {Intl.NumberFormat("es-ES", {
+                          style: "currency",
+                          currency: "EUR",
+                        }).format(user.saldo)}
+                      </Typography>
+                    </ListItemText>
+                  </Stack>
+                </MenuItem>
+
+                <Divider sx={{ marginY: "3px !important" }} />
+
                 <MenuItem onClick={() => handleRedirect("/admin/perfil")}>
                   <ListItemIcon>
                     <Person2Icon sx={{ mr: 2 }} />
@@ -183,7 +202,9 @@ export const ClientNavBar = ({ user }) => {
 
                 <MenuItem
                   onClick={() => {
-                    signOut();
+                    signOut({
+                      callbackUrl: `${window.location.origin}/auth/login`,
+                    });
                     handleClose();
                   }}
                 >

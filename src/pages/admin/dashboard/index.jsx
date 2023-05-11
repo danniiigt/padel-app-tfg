@@ -124,7 +124,14 @@ const AdminPage = ({ user, registros }) => {
 };
 
 export const getServerSideProps = async (ctx) => {
-  const session = await getServerSession(ctx.req, ctx.res, authOptions);
+  const nextAuthSession = await getServerSession(ctx.req, ctx.res, authOptions);
+  let session = null;
+
+  if (nextAuthSession?.user?.user) {
+    session = nextAuthSession.user;
+  } else {
+    session = nextAuthSession;
+  }
 
   if (!session) {
     return { redirect: { destination: "/auth/login" } };
@@ -145,7 +152,11 @@ export const getServerSideProps = async (ctx) => {
     },
   });
 
-  if (!session || user.role !== "ADMIN") {
+  if (user.role == "SUPERADMIN") {
+    return { redirect: { destination: "/superadmin" } };
+  }
+
+  if (user.role !== "ADMIN") {
     return { redirect: { destination: "/auth/login" } };
   }
 

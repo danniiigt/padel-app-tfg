@@ -40,6 +40,7 @@ model User {
     businessName  String?
     email         String?       @unique
     emailVerified DateTime?
+    password      String?
     image         String?
     role          String        @default("USER")
     saldo         Decimal       @default(0)
@@ -50,7 +51,7 @@ model User {
     reserva       Reserva[]
     registro      Registro[]
     transaccion   Transaccion[]
-    Valoracion    Valoracion[]
+    valoracion    Valoracion[]
 }
 
 model VerificationToken {
@@ -74,8 +75,8 @@ model Pista {
     horarioApertura   String       @default("00:00")
     evento            Evento[]
     activa            Boolean      @default(true)
-    Valoracion        Valoracion[]
-    Reserva           Reserva[]
+    valoracion        Valoracion[]
+    reserva           Reserva[]
 }
 
 model Reserva {
@@ -90,7 +91,7 @@ model Reserva {
     pista             Pista    @relation(fields: [pistaId], references: [id])
     pistaId           String
 
-    Transaccion Transaccion[]
+    transaccion Transaccion[]
 }
 
 model Evento {
@@ -103,7 +104,7 @@ model Evento {
     ocupada     Boolean   @default(false)
     pista       Pista?    @relation(fields: [pistaId], references: [id])
     pistaId     String?
-    Reserva     Reserva[]
+    reserva     Reserva[]
 }
 
 // CADA VEZ QUE EL USUARIO HAGA UNA ACCION SE REGISTRARA EN ESTA TABLA
@@ -131,9 +132,10 @@ model Transaccion {
     fecha     DateTime
     amount    Decimal
     tipo      String
+    estado    String   @default("Pendiente")
     usuario   User     @relation(fields: [usuarioId], references: [id])
     usuarioId String
-    paypalid  String
+    paypalId  String?
     reserva   Reserva? @relation(fields: [reservaId], references: [id])
     reservaId String?
 }

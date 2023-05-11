@@ -138,7 +138,14 @@ const BancoPage = ({
 };
 
 export const getServerSideProps = async (ctx) => {
-  const session = await getServerSession(ctx.req, ctx.res, authOptions);
+  const nextAuthSession = await getServerSession(ctx.req, ctx.res, authOptions);
+  let session = null;
+
+  if (nextAuthSession?.user?.user) {
+    session = nextAuthSession.user;
+  } else {
+    session = nextAuthSession;
+  }
 
   if (!session) {
     return { redirect: { destination: "/auth/login" } };
@@ -153,14 +160,22 @@ export const getServerSideProps = async (ctx) => {
   const transaccionesDepositos = await prisma.transaccion.findMany({
     where: {
       usuarioId: user.id,
-      tipo: "DEPOSITO",
+      tipo: "Depósito",
+    },
+
+    orderBy: {
+      fecha: "desc",
     },
   });
 
   const transaccionesRetiradas = await prisma.transaccion.findMany({
     where: {
       usuarioId: user.id,
-      tipo: "RETIRO",
+      tipo: "Retiro",
+    },
+
+    orderBy: {
+      fecha: "desc",
     },
   });
 

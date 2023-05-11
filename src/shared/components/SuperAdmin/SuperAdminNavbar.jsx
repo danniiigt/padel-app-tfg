@@ -6,7 +6,6 @@ import {
   Breadcrumbs,
   Divider,
   IconButton,
-  ListItem,
   ListItemIcon,
   ListItemText,
   Menu,
@@ -16,22 +15,17 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import AddIcon from "@mui/icons-material/Add";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import HomeIcon from "@mui/icons-material/Home";
-import { useRouter } from "next/router";
 import LogoutIcon from "@mui/icons-material/Logout";
-import SupportAgentIcon from "@mui/icons-material/SupportAgent";
-import Person2Icon from "@mui/icons-material/Person2";
-import DashboardIcon from "@mui/icons-material/Dashboard";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import EmailIcon from "@mui/icons-material/Email";
 
-export const AdminNavbar = ({ user, breadcrumbsItems }) => {
+export const SuperAdminNavbar = ({ user, breadcrumbsItems }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const router = useRouter();
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -41,13 +35,32 @@ export const AdminNavbar = ({ user, breadcrumbsItems }) => {
     setAnchorEl(null);
   };
 
-  const handleRedirect = (url) => {
-    router.push(url);
-  };
-
   return (
     <>
       <AppBar elevation={0} sx={{ backgroundColor: "background.dark" }}>
+        <Stack
+          sx={{ backgroundColor: "primary.main", width: "100%", height: 40 }}
+        >
+          <Box
+            sx={{
+              maxWidth: 1100,
+              marginX: "auto",
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              paddingX: "16px !important",
+              gap: 3,
+            }}
+          >
+            <AdminPanelSettingsIcon sx={{ color: "white" }} />
+            <Typography color="white">
+              Sesión Iniciada como Super Administrador
+            </Typography>
+            <AdminPanelSettingsIcon sx={{ color: "white" }} />
+          </Box>
+        </Stack>
         <Toolbar
           sx={{
             maxWidth: 1100,
@@ -71,9 +84,9 @@ export const AdminNavbar = ({ user, breadcrumbsItems }) => {
             <Typography variant="h6">
               <Link
                 style={{ color: "inherit", textDecoration: "none" }}
-                href="/admin"
+                href="/superadmin"
               >
-                Admin
+                SuperAdmin
               </Link>
             </Typography>
 
@@ -89,10 +102,10 @@ export const AdminNavbar = ({ user, breadcrumbsItems }) => {
                 }}
               >
                 <Link
-                  href="/admin/dashboard"
+                  href="/superadmin/usuarios"
                   style={{ color: "inherit", textDecoration: "none" }}
                 >
-                  Inicio
+                  Usuarios
                 </Link>
               </Typography>
               <Typography
@@ -106,24 +119,7 @@ export const AdminNavbar = ({ user, breadcrumbsItems }) => {
                 }}
               >
                 <Link
-                  href="/admin/reservas"
-                  style={{ color: "inherit", textDecoration: "none" }}
-                >
-                  Reservas
-                </Link>
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{
-                  "&:hover": {
-                    color: "#eeee",
-                  },
-                  transition: "all 0.3s ease",
-                }}
-              >
-                <Link
-                  href="/admin/pistas"
+                  href="/superadmin/pistas"
                   style={{ color: "inherit", textDecoration: "none" }}
                 >
                   Pistas
@@ -140,10 +136,27 @@ export const AdminNavbar = ({ user, breadcrumbsItems }) => {
                 }}
               >
                 <Link
-                  href="/admin/banco"
+                  href="/superadmin/transacciones"
                   style={{ color: "inherit", textDecoration: "none" }}
                 >
-                  Banco
+                  Transacciones
+                </Link>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  "&:hover": {
+                    color: "#eeee",
+                  },
+                  transition: "all 0.3s ease",
+                }}
+              >
+                <Link
+                  href="/superadmin/transacciones"
+                  style={{ color: "inherit", textDecoration: "none" }}
+                >
+                  Soporte
                 </Link>
               </Typography>
             </Stack>
@@ -155,15 +168,10 @@ export const AdminNavbar = ({ user, breadcrumbsItems }) => {
               alignItems="center"
               gap={3}
             >
-              <Tooltip title="Añadir">
-                <IconButton sx={{ color: "#eeee" }}>
-                  <AddIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Notificaciónes">
+              <Tooltip title="Mensajes de Soporte">
                 <IconButton sx={{ color: "#eeee", mr: 1 }}>
                   <Badge badgeContent={3} color="secondary">
-                    <NotificationsIcon />
+                    <EmailIcon />
                   </Badge>
                 </IconButton>
               </Tooltip>
@@ -197,39 +205,19 @@ export const AdminNavbar = ({ user, breadcrumbsItems }) => {
                 onClose={handleClose}
               >
                 <MenuItem disableTouchRipple disableRipple>
-                  <Stack>
+                  <Stack spacing={5}>
+                    <img
+                      alt="Tu imagen"
+                      src={user.image}
+                      style={{
+                        width: 60,
+                        objectFit: "contain",
+                        margin: "0 auto",
+                        marginBottom: 10,
+                      }}
+                    />
                     <ListItemText>{user.name}</ListItemText>
-                    <ListItemText>
-                      <Typography variant="body2" fontSize={13}>
-                        Saldo:{" "}
-                        {Intl.NumberFormat("es-ES", {
-                          style: "currency",
-                          currency: "EUR",
-                        }).format(user.saldo)}
-                      </Typography>
-                    </ListItemText>
                   </Stack>
-                </MenuItem>
-
-                <Divider sx={{ marginY: "3px !important" }} />
-
-                <MenuItem onClick={() => handleRedirect("/admin/perfil")}>
-                  <ListItemIcon>
-                    <Person2Icon sx={{ mr: 2 }} />
-                  </ListItemIcon>
-                  <ListItemText>Perfil</ListItemText>
-                </MenuItem>
-                <MenuItem onClick={() => handleRedirect("/soporte")}>
-                  <ListItemIcon>
-                    <SupportAgentIcon sx={{ mr: 2 }} />
-                  </ListItemIcon>
-                  <ListItemText>Soporte</ListItemText>
-                </MenuItem>
-                <MenuItem onClick={() => handleRedirect("/admin/dashboard")}>
-                  <ListItemIcon>
-                    <DashboardIcon sx={{ mr: 2 }} />
-                  </ListItemIcon>
-                  <ListItemText>Panel Control</ListItemText>
                 </MenuItem>
 
                 <Divider sx={{ marginY: "3px !important" }} />

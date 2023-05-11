@@ -2,6 +2,8 @@ import { Box, Divider, Stack, Typography } from "@mui/material";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 
 export const DashboardDepositos = ({ depositos }) => {
+  console.log(depositos);
+
   return (
     <>
       <Box
@@ -42,7 +44,23 @@ export const DashboardDepositos = ({ depositos }) => {
               direction="row"
               justifyContent="space-between"
             >
-              <Typography variant="body2">{registro.accion}</Typography>
+              <Stack direction="row" spacing={2}>
+                <Typography variant="body2">
+                  +{" "}
+                  {Intl.NumberFormat("es-ES", {
+                    style: "currency",
+                    currency: "EUR",
+                  }).format(registro.amount)}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color={
+                    registro.estado == "Pendiente" ? "#e0ac1b" : "success.main"
+                  }
+                >
+                  {registro.estado}
+                </Typography>
+              </Stack>
               <Typography variant="body2">
                 {
                   // FORMAT DATE TO THIS: 20:11 18/04/2023

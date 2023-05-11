@@ -18,6 +18,30 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 const RegisterPage = () => {
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    // Data from form
+    const data = new FormData(e.target);
+    const name = data.get("name");
+    const email = data.get("email");
+    const password = data.get("password");
+    const passwordConfirm = data.get("password-confirm");
+    console.log(name, email, password, passwordConfirm);
+
+    const res = await fetch(`/api/user/create`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+      }),
+    });
+
+    console.log(res.data);
+  };
+
   return (
     <Box height="100vh" width="100vw" display="flex">
       <Box
@@ -47,6 +71,8 @@ const RegisterPage = () => {
         className="animate__animated animate__fadeIn"
       >
         <Box
+          component="form"
+          onSubmit={handleRegister}
           sx={{
             width: "100%",
             maxWidth: 400,
@@ -83,7 +109,13 @@ const RegisterPage = () => {
               size="medium"
               color="info"
               sx={{ textTransform: "none" }}
-              onClick={() => signIn("google")}
+              onClick={() =>
+                signIn("google", {
+                  callbackUrl: `${window.location.origin}/admin`,
+                }).then(() => {
+                  console.log("redirijimos..!!");
+                })
+              }
             >
               <img
                 src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png"
@@ -98,7 +130,11 @@ const RegisterPage = () => {
               size="medium"
               color="info"
               sx={{ textTransform: "none" }}
-              onClick={() => signIn("twitter")}
+              onClick={() =>
+                signIn("twitter", {
+                  callbackUrl: `${window.location.origin}/admin`,
+                })
+              }
             >
               <img
                 src="https://seeklogo.com/images/T/twitter-2012-positive-logo-916EDF1309-seeklogo.com.png"
@@ -113,7 +149,11 @@ const RegisterPage = () => {
               size="medium"
               color="info"
               sx={{ textTransform: "none" }}
-              onClick={() => signIn("github")}
+              onClick={() =>
+                signIn("github", {
+                  callbackUrl: `${window.location.origin}/admin`,
+                })
+              }
             >
               <img
                 src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
@@ -132,6 +172,7 @@ const RegisterPage = () => {
               variant="outlined"
               placeholder="Tu nombre completo"
               fullWidth
+              name="name"
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -147,6 +188,7 @@ const RegisterPage = () => {
               placeholder="tucorreo@correo.com"
               type="email"
               fullWidth
+              name="email"
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -162,6 +204,23 @@ const RegisterPage = () => {
               placeholder="ContrAseÑaSegura!"
               type="password"
               fullWidth
+              name="password"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <KeyOutlinedIcon fontSize="small" sx={{ mr: 1 }} />
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            <TextField
+              label="COnfirmar contraseña"
+              variant="outlined"
+              placeholder="ContrAseÑaSegura!"
+              type="password"
+              fullWidth
+              name="password-confirm"
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -177,6 +236,7 @@ const RegisterPage = () => {
               fullWidth
               sx={{ borderRadius: 3 }}
               disableRipple
+              type="submit"
             >
               Crear cuenta
             </Button>
@@ -190,7 +250,14 @@ const RegisterPage = () => {
 // You should use getServerSideProps when:
 // - Only if you need to pre-render a page whose data must be fetched at request time
 export const getServerSideProps = async (ctx) => {
-  const session = await getServerSession(ctx.req, ctx.res, authOptions);
+  const nextAuthSession = await getServerSession(ctx.req, ctx.res, authOptions);
+  let session = null;
+
+  if (nextAuthSession?.user?.user) {
+    session = nextAuthSession.user;
+  } else {
+    session = nextAuthSession;
+  }
 
   if (session) {
     return { redirect: { destination: "/home" } };

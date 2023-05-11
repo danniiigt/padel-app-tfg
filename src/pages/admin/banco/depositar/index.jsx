@@ -12,9 +12,13 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 
 const DepositarPage = ({ user }) => {
   user = JSON.parse(user);
+  const router = useRouter();
 
   const [amountValue, setAmountValue] = useState();
 
@@ -26,6 +30,15 @@ const DepositarPage = ({ user }) => {
     if (amountValue > 1000) {
       setAmountValue(1000);
     }
+  };
+
+  const style = {
+    layout: "horizontal", // horizontal | vertical
+    color: "black", // gold | blue | silver | black
+    shape: "rect", // pill | rect
+    label: "paypal", // pay | buynow | paypal
+    tagline: false, // true | false
+    height: 40,
   };
 
   const breadcrumbsItems = [
@@ -42,6 +55,32 @@ const DepositarPage = ({ user }) => {
       text: "Depositar",
     },
   ];
+
+  const handleDepositPaypal = async (details) => {
+    if (details?.status?.toUpperCase() == "COMPLETED") {
+      const res = await fetch("/api/transacciones", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: Number(details.purchase_units[0].amount.value),
+          tipo: "Depósito",
+          usuarioId: user.id,
+          paypalId: details.id,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.status == 200) {
+        toast.success(data.message);
+        router.push("/admin/banco");
+      } else {
+        toast.error(data.message);
+      }
+    }
+  };
 
   return (
     <MainLayout user={user} breadcrumbsItems={breadcrumbsItems}>
@@ -103,20 +142,7 @@ const DepositarPage = ({ user }) => {
           onBlur={checkAmountValue}
           autoComplete="off"
         />
-        <Box>
-          <Button
-            variant="contained"
-            color="inherit"
-            disableElevation
-            sx={{
-              height: "100%",
-              color: "background.paper",
-            }}
-            onClick={() => setAmountValue(0)}
-          >
-            <CloseIcon sx={{ color: "text.secondary" }} />
-          </Button>
-        </Box>
+
         <Stack spacing={1.5} justifyContent="space-between">
           <Button
             variant="contained"
@@ -144,15 +170,71 @@ const DepositarPage = ({ user }) => {
           </Button>
         </Stack>
       </Stack>
-      <Stack mt={3} direction="row" justifyContent="space-between">
+      <Stack
+        mt={3}
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+      >
         <Typography>Depósito mínimo de 10€ y máximo de 1000€</Typography>
+
+        <PayPalScriptProvider
+          options={{
+            "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+            currency: process.env.NEXT_PUBLIC_PLATFORM_CURRENCY,
+            components: "buttons",
+          }}
+        >
+          <PayPalButtons
+            style={style}
+            disabled={false}
+            forceReRender={[amountValue]}
+            createOrder={(data, actions) => {
+              return actions.order
+                .create({
+                  purchase_units: [
+                    {
+                      amount: {
+                        currency_code:
+                          process.env.NEXT_PUBLIC_PLATFORM_CURRENCY,
+                        value: amountValue,
+                      },
+                    },
+                  ],
+                })
+                .then((orderId) => {
+                  // Your code here after create the order
+                  return orderId;
+                });
+            }}
+            onCancel={(data, actions) => {
+              console.log("onCancel", data, actions);
+            }}
+            onError={(err) => {
+              console.log("onError", err);
+            }}
+            onApprove={function (data, actions) {
+              return actions.order.capture().then(function (details) {
+                handleDepositPaypal(details);
+                console.log(details);
+              });
+            }}
+          />
+        </PayPalScriptProvider>
       </Stack>
     </MainLayout>
   );
 };
 
 export const getServerSideProps = async (ctx) => {
-  const session = await getServerSession(ctx.req, ctx.res, authOptions);
+  const nextAuthSession = await getServerSession(ctx.req, ctx.res, authOptions);
+  let session = null;
+
+  if (nextAuthSession?.user?.user) {
+    session = nextAuthSession.user;
+  } else {
+    session = nextAuthSession;
+  }
 
   if (!session) {
     return { redirect: { destination: "/auth/login" } };
