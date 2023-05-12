@@ -30,7 +30,7 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AddRoadIcon from "@mui/icons-material/AddRoad";
 import { ConfirmDialog } from "@/shared/components/ConfirmDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 ChartJS.register(
@@ -81,6 +81,10 @@ const PistasPage = ({ user, pistas, eventos, reservas }) => {
       text: "Pistas",
     },
   ];
+
+  useEffect(() => {
+    document.title = "Pistas - Padel App";
+  }, []);
 
   return (
     <MainLayout user={user} breadcrumbsItems={breadcrumbsItems}>

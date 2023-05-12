@@ -7,7 +7,7 @@ export default function handler(req, res) {
       break;
 
     default:
-      res.status(405).end(`Method ${req.method} Not Allowed`);
+      res.status(405).end(`El método ${req.method} no está permitido`);
       break;
   }
 }
@@ -26,7 +26,7 @@ const handleActualizarUsuario = async (req, res) => {
     },
   });
 
-  if (!user) return res.status(404).end(`User with id ${id} not found`);
+  if (!user) return res.status(404).end(`El usuario con id ${id} no existe`);
 
   return res.status(200).json(user);
 };

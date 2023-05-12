@@ -113,8 +113,8 @@ const handleRetiro = async (req, res) => {
     await prisma.registro.create({
       data: {
         fecha: new Date(),
-        accion: `Retiro de ${amount}€ a través de PayPal`,
-        descripcion: `Retiro de ${amount}€ a través de PayPal. Estado: ${estado}`,
+        accion: `Solicitud de retiro de ${amount}€ a través de PayPal`,
+        descripcion: `Solicitud de retiro de ${amount}€ a través de PayPal. Estado: ${estado}`,
         usuarioId: usuarioId,
       },
     });

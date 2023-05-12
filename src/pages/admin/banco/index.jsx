@@ -8,7 +8,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import prisma from "../../../../lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
@@ -44,6 +44,10 @@ const BancoPage = ({
   const handleRedirect = (path) => {
     router.push(path);
   };
+
+  useEffect(() => {
+    document.title = "Banco - Padel App";
+  }, []);
 
   return (
     <MainLayout user={user} breadcrumbsItems={breadcrumbsItems}>

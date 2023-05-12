@@ -12,7 +12,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
@@ -89,6 +89,10 @@ const RetirarPage = ({ user }) => {
       toast.error(data.message);
     }
   };
+
+  useEffect(() => {
+    document.title = "Retirar - Padel App";
+  }, []);
 
   return (
     <MainLayout user={user} breadcrumbsItems={breadcrumbsItems}>

@@ -1,5 +1,5 @@
 import { MainLayout } from "@/shared/layouts/MainLayout";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import prisma from "../../../../lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
@@ -68,6 +68,10 @@ const PerfilPage = ({ user }) => {
       text: "Perfil",
     },
   ];
+
+  useEffect(() => {
+    document.title = `${user.name} - Padel App`;
+  }, []);
 
   return (
     <MainLayout user={user} breadcrumbsItems={breadcrumbsItems}>

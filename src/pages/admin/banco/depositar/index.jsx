@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { toast } from "react-toastify";
@@ -81,6 +81,10 @@ const DepositarPage = ({ user }) => {
       }
     }
   };
+
+  useEffect(() => {
+    document.title = "Depositar - Padel App";
+  }, []);
 
   return (
     <MainLayout user={user} breadcrumbsItems={breadcrumbsItems}>

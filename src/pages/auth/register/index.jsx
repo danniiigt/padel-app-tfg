@@ -16,18 +16,50 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { useEffect, useState } from "react";
 
 const RegisterPage = () => {
+  const [nameError, setNameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [passwordConfirmError, setPasswordConfirmError] = useState(false);
+
+  useEffect(() => {
+    document.title = "Registro - Padel App";
+  }, []);
+
   const handleRegister = async (e) => {
     e.preventDefault();
+    let errors = false;
 
-    // Data from form
     const data = new FormData(e.target);
     const name = data.get("name");
     const email = data.get("email");
     const password = data.get("password");
     const passwordConfirm = data.get("password-confirm");
     console.log(name, email, password, passwordConfirm);
+
+    if (name.length < 3) {
+      setNameError(true);
+      errors = true;
+    }
+
+    if ((await emailEnUso(email)) == true) {
+      setEmailError(true);
+      errors = true;
+    }
+
+    if (password.length < 8) {
+      setPasswordError(true);
+      errors = true;
+    }
+
+    if (password !== passwordConfirm) {
+      setPasswordConfirmError(true);
+      errors = true;
+    }
+
+    if (errors) return;
 
     const res = await fetch(`/api/user/create`, {
       method: "POST",
@@ -39,7 +71,31 @@ const RegisterPage = () => {
       }),
     });
 
-    console.log(res.data);
+    if (res.status == 200) {
+      await signIn("credentials", {
+        email,
+        password,
+        redirect: `${window.location.origin}/admin`,
+      });
+    }
+  };
+
+  const emailEnUso = async (email) => {
+    const res = await fetch(`/api/user/email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.ok == false) {
+      return false;
+    } else {
+      return true;
+    }
   };
 
   return (
@@ -173,6 +229,10 @@ const RegisterPage = () => {
               placeholder="Tu nombre completo"
               fullWidth
               name="name"
+              required
+              error={nameError}
+              helperText={nameError && "El nombre debe tener al menos 3 letras"}
+              onKeyUp={() => setNameError(false)}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -186,9 +246,13 @@ const RegisterPage = () => {
               label="Correo electrónico"
               variant="outlined"
               placeholder="tucorreo@correo.com"
-              type="email"
               fullWidth
+              type="email"
               name="email"
+              required
+              error={emailError}
+              helperText={emailError && "El correo ya está en uso"}
+              onKeyUp={() => setEmailError(false)}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -205,6 +269,10 @@ const RegisterPage = () => {
               type="password"
               fullWidth
               name="password"
+              required
+              error={passwordError}
+              helperText={passwordError && "La contraseña es muy corta"}
+              onKeyUp={() => setPasswordError(false)}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -221,6 +289,12 @@ const RegisterPage = () => {
               type="password"
               fullWidth
               name="password-confirm"
+              required
+              error={passwordConfirmError}
+              helperText={
+                passwordConfirmError && "Las contraseñas no coinciden"
+              }
+              onKeyUp={() => setPasswordConfirmError(false)}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">

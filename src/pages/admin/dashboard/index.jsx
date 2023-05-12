@@ -9,10 +9,15 @@ import prisma from "../../../../lib/prisma";
 import { Charts } from "../../../shared/components/Charts";
 import { DashboardButtons } from "../../../shared/components/DashboardButtons";
 import { DashboardRegistros } from "../../../shared/components/DashboardRegistros";
+import { useEffect } from "react";
 
 const AdminPage = ({ user, registros }) => {
   user = JSON.parse(user);
   registros = JSON.parse(registros);
+
+  useEffect(() => {
+    document.title = "Panel De Control - Padel App";
+  }, []);
 
   return (
     <MainLayout user={user}>

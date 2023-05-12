@@ -6,9 +6,14 @@ import NearMeIcon from "@mui/icons-material/NearMe";
 import { MainLayout } from "@/shared/layouts/MainLayout";
 import { authOptions } from "../api/auth/[...nextauth]";
 import { getServerSession } from "next-auth";
+import { useEffect } from "react";
 
 const HomePage = ({ user, pistas }) => {
   user = JSON.parse(user);
+
+  useEffect(() => {
+    document.title = "Home - Padel App";
+  }, []);
 
   return (
     <>

@@ -1,7 +1,7 @@
 import { MainLayout } from "@/shared/layouts/MainLayout";
 import { Box, Grid, Typography } from "@mui/material";
 import { getServerSession } from "next-auth";
-import React from "react";
+import React, { useEffect } from "react";
 import { authOptions } from "../api/auth/[...nextauth]";
 import prisma from "../../../lib/prisma";
 import { UsuariosTable } from "@/shared/components/SuperAdmin/UsuariosTable";
@@ -14,6 +14,10 @@ const SuperAdminPage = ({ user, users, pistas, transacciones }) => {
   transacciones = JSON.parse(transacciones);
 
   console.log(pistas);
+
+  useEffect(() => {
+    document.title = "Panel De Control - Padel App";
+  }, []);
 
   return (
     <MainLayout user={user}>

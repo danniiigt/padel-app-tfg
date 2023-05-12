@@ -196,6 +196,10 @@ const AddPista = ({ user, step }) => {
     },
   ];
 
+  useEffect(() => {
+    document.title = "Añadir Pista - Padel App";
+  }, []);
+
   if (step == 1) {
     return (
       <MainLayout user={user} breadcrumbsItems={breadcrumbsItems}>

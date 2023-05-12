@@ -1,7 +1,11 @@
 import { Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 
 const SoportePage = () => {
+  useEffect(() => {
+    document.title = "Soporte - Padel App";
+  }, []);
+
   return (
     <div>
       <Typography>Soporte</Typography>

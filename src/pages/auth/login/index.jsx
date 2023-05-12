@@ -14,12 +14,18 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 const LoginPage = () => {
-  const { status } = useSession();
   const router = useRouter();
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+
+  useEffect(() => {
+    document.title = "Iniciar Sesión - Padel App";
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -32,8 +38,17 @@ const LoginPage = () => {
       const res = await signIn("credentials", {
         email,
         password,
-        callbackUrl: `${window.location.origin}/admin`,
+        redirect: false,
       });
+
+      if (res.status == 200) {
+        router.push("/admin");
+      } else {
+        setEmailError(true);
+        setPasswordError(true);
+      }
+
+      console.log(res);
     } catch (error) {}
   };
 
@@ -156,6 +171,11 @@ const LoginPage = () => {
               placeholder="Correo electrónico"
               fullWidth
               name="email"
+              required
+              type="email"
+              error={emailError}
+              helperText={emailError && "Las credenciales son incorrectas"}
+              onKeyUp={() => setEmailError(false)}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -171,7 +191,11 @@ const LoginPage = () => {
               placeholder="Contraseña"
               type="password"
               name="password"
+              required
               fullWidth
+              error={passwordError}
+              helperText={passwordError && "Las credenciales son incorrectas"}
+              onKeyUp={() => setPasswordError(false)}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
