@@ -2,7 +2,6 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
 import prisma from "../../../../lib/prisma";
 
 export const authOptions = {
@@ -49,9 +48,11 @@ export const authOptions = {
           });
 
         if (user) {
+          console.log(user);
           return user;
         } else {
-          return null;
+          console.log("NAUR!");
+          return false;
         }
       },
     }),

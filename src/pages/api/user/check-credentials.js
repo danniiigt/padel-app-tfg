@@ -17,9 +17,6 @@ const hashPassword = (password) => {
 
 // POST /api/user
 async function handlePOST(res, req) {
-  console.log("REQ BODY");
-  console.log(req.body);
-
   const user = await prisma.user.findUnique({
     where: { email: req.body.email },
     select: {
