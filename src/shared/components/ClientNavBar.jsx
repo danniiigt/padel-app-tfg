@@ -16,19 +16,19 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import Person2Icon from "@mui/icons-material/Person2";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
-import styled from "@emotion/styled";
+import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 
-export const ClientNavBar = ({ user }) => {
+export const ClientNavBar = ({ user, message }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const router = useRouter();
-
-  console.log(user);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -77,23 +77,6 @@ export const ClientNavBar = ({ user }) => {
                 }}
               >
                 <Link
-                  href="/home"
-                  style={{ color: "inherit", textDecoration: "none" }}
-                >
-                  Inicio
-                </Link>
-              </Typography>
-              <Typography
-                variant="body2"
-                color="#d9d9d9"
-                sx={{
-                  "&:hover": {
-                    color: "white",
-                  },
-                  transition: "all 0.3s ease",
-                }}
-              >
-                <Link
                   href="/buscador"
                   style={{
                     color: "inherit",
@@ -114,13 +97,53 @@ export const ClientNavBar = ({ user }) => {
                 }}
               >
                 <Link
-                  href="/soporte"
+                  href="/ranking"
                   style={{
                     color: "inherit",
                     textDecoration: "none",
                   }}
                 >
-                  Soporte
+                  Ranking
+                </Link>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="#d9d9d9"
+                sx={{
+                  "&:hover": {
+                    color: "white",
+                  },
+                  transition: "all 0.3s ease",
+                }}
+              >
+                <Link
+                  href="/torneos"
+                  style={{
+                    color: "inherit",
+                    textDecoration: "none",
+                  }}
+                >
+                  Torneos
+                </Link>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="#d9d9d9"
+                sx={{
+                  "&:hover": {
+                    color: "white",
+                  },
+                  transition: "all 0.3s ease",
+                }}
+              >
+                <Link
+                  href="/banco"
+                  style={{
+                    color: "inherit",
+                    textDecoration: "none",
+                  }}
+                >
+                  Banco
                 </Link>
               </Typography>
             </Stack>
@@ -132,7 +155,7 @@ export const ClientNavBar = ({ user }) => {
               alignItems="center"
               spacing={2}
             >
-              <Tooltip title="Notificaciónes">
+              <Tooltip title="Notificaciones">
                 <IconButton sx={{ color: "#eeee", mr: 1 }}>
                   <Badge badgeContent={3} color="secondary">
                     <NotificationsIcon />
@@ -172,13 +195,23 @@ export const ClientNavBar = ({ user }) => {
                   <Stack>
                     <ListItemText>{user.name}</ListItemText>
                     <ListItemText>
-                      <Typography variant="body2" fontSize={13}>
+                      <Typography variant="body2" fontSize={12}>
                         Saldo:{" "}
                         {Intl.NumberFormat("es-ES", {
                           style: "currency",
                           currency: "EUR",
                         }).format(user.saldo)}
                       </Typography>
+                    </ListItemText>
+                    <ListItemText>
+                      <Stack direction="row" spacing={0.4}>
+                        <Typography variant="body2" fontSize={12}>
+                          Ranking:
+                        </Typography>
+                        <Typography variant="body2" color="error" fontSize={12}>
+                          Próximamente
+                        </Typography>
+                      </Stack>
                     </ListItemText>
                   </Stack>
                 </MenuItem>
@@ -191,11 +224,57 @@ export const ClientNavBar = ({ user }) => {
                   </ListItemIcon>
                   <ListItemText>Perfil</ListItemText>
                 </MenuItem>
-                <MenuItem onClick={() => handleRedirect("/soporte")}>
+
+                <MenuItem onClick={() => handleRedirect("/banco")}>
                   <ListItemIcon>
-                    <SupportAgentIcon sx={{ mr: 2 }} />
+                    <AccountBalanceWalletIcon sx={{ mr: 2 }} />
                   </ListItemIcon>
-                  <ListItemText>Soporte</ListItemText>
+                  <ListItemText>Banco</ListItemText>
+                </MenuItem>
+
+                <MenuItem onClick={() => handleRedirect("/misreservas")}>
+                  <ListItemIcon>
+                    <ConfirmationNumberIcon sx={{ mr: 2 }} />
+                  </ListItemIcon>
+                  <ListItemText>Reservas</ListItemText>
+                </MenuItem>
+
+                <MenuItem onClick={() => handleRedirect("/mispuntos")}>
+                  <ListItemIcon>
+                    <CardGiftcardIcon sx={{ mr: 2 }} />
+                  </ListItemIcon>
+                  <Stack>
+                    <ListItemText>Recompensas</ListItemText>
+                    <ListItemText>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontSize: 11 }}
+                        fontWeight={300}
+                        color="error"
+                      >
+                        Próximamente
+                      </Typography>
+                    </ListItemText>
+                  </Stack>
+                </MenuItem>
+
+                <MenuItem onClick={() => handleRedirect("/torneos")}>
+                  <ListItemIcon>
+                    <EmojiEventsIcon sx={{ mr: 2 }} />
+                  </ListItemIcon>
+                  <Stack>
+                    <ListItemText>Torneos</ListItemText>
+                    <ListItemText>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontSize: 11 }}
+                        fontWeight={300}
+                        color="error"
+                      >
+                        Próximamente
+                      </Typography>
+                    </ListItemText>
+                  </Stack>
                 </MenuItem>
 
                 <Divider sx={{ marginY: "3px !important" }} />
@@ -217,6 +296,7 @@ export const ClientNavBar = ({ user }) => {
             </Stack>
           </Stack>
         </Toolbar>
+        {message}
       </AppBar>
       <Toolbar />
     </>

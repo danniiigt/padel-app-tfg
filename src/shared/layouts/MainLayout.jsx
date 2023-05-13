@@ -4,11 +4,11 @@ import { NotAuthNavbar } from "../components/NotAuthNavbar";
 import { ClientNavBar } from "../components/ClientNavBar";
 import { SuperAdminNavbar } from "../components/SuperAdmin/SuperAdminNavbar";
 
-export const MainLayout = ({ children, user, breadcrumbsItems }) => {
+export const MainLayout = ({ children, user, breadcrumbsItems, message }) => {
   if (!user) {
     return (
       <>
-        <NotAuthNavbar />
+        <NotAuthNavbar message={message} />
         <Box sx={{ maxWidth: 1100, paddingX: "16px", marginX: "auto" }}>
           {children}
         </Box>
@@ -19,7 +19,11 @@ export const MainLayout = ({ children, user, breadcrumbsItems }) => {
   if (user?.role == "ADMIN") {
     return (
       <>
-        <AdminNavbar user={user} breadcrumbsItems={breadcrumbsItems} />
+        <AdminNavbar
+          message={message}
+          user={user}
+          breadcrumbsItems={breadcrumbsItems}
+        />
         <Box sx={{ maxWidth: 1100, paddingX: "16px", marginX: "auto" }}>
           {children}
         </Box>
@@ -28,7 +32,7 @@ export const MainLayout = ({ children, user, breadcrumbsItems }) => {
   } else if (user?.role == "SUPERADMIN") {
     return (
       <>
-        <SuperAdminNavbar user={user} />
+        <SuperAdminNavbar message={message} user={user} />
         <Box
           sx={{
             maxWidth: 1100,
@@ -44,7 +48,7 @@ export const MainLayout = ({ children, user, breadcrumbsItems }) => {
   } else {
     return (
       <>
-        <ClientNavBar user={user} />
+        <ClientNavBar message={message} user={user} />
         <Box sx={{ maxWidth: 1100, paddingX: "16px", marginX: "auto" }}>
           {children}
         </Box>

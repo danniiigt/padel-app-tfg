@@ -74,12 +74,12 @@ export const UserBankEditCard = ({ user: userProps }) => {
       <Divider />
       <Stack mt={4} spacing={2} sx={{ maxWidth: 800, width: "100%" }}>
         <Stack direction="row" justifyContent="space-between" spacing={4}>
-          <Typography>Paypal ID</Typography>
+          <Typography>Email Paypal</Typography>
           <Stack direction="row" spacing={1}>
             {editPaypalId && (
               <>
                 <TextField
-                  label="Paypal ID"
+                  label="Email de PayPal"
                   variant="outlined"
                   helperText={
                     <Typography
@@ -87,8 +87,8 @@ export const UserBankEditCard = ({ user: userProps }) => {
                       sx={{ maxWidth: 400, fontSize: 12 }}
                       noWrap
                     >
-                      P. Ej:
-                      AbqVmYAQMe5ptU9dK0UMyWUnxmjBMtg1SvahWCYO-y97RV-7_RU0r-9AUy7dfi3XBMvKM0Doremkl69P
+                      Se usará para enviar los fondos de tus retiros a esta
+                      dirección
                     </Typography>
                   }
                   size="small"
@@ -121,18 +121,6 @@ export const UserBankEditCard = ({ user: userProps }) => {
                 </Typography>
                 <Tooltip title="Editar" onClick={() => setEditPaypalId(true)}>
                   <EditIcon fontSize="small" sx={{ cursor: "pointer" }} />
-                </Tooltip>
-                <Tooltip title="Dónde conseguirlo">
-                  <Link
-                    href="https://ayuda.reworth.co/knowledge/en-d%C3%B3nde-encuentro-mi-merchant-id-de-paypal"
-                    target="_blank"
-                    style={{ color: "inherit" }}
-                  >
-                    <HelpOutlineIcon
-                      fontSize="small"
-                      sx={{ cursor: "pointer" }}
-                    />
-                  </Link>
                 </Tooltip>
               </>
             )}

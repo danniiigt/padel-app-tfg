@@ -84,12 +84,6 @@ const PerfilPage = ({ user }) => {
             Ajustes de tu perfil
           </Typography>
         </Box>
-
-        <Tooltip title="Ir a Soporte">
-          <Link href="/soporte" style={{ color: "inherit" }}>
-            <ContactSupportIcon fontSize="large" />
-          </Link>
-        </Tooltip>
       </Stack>
 
       <Stack direction="row" spacing={5}>

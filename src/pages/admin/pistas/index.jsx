@@ -32,6 +32,7 @@ import AddRoadIcon from "@mui/icons-material/AddRoad";
 import { ConfirmDialog } from "@/shared/components/ConfirmDialog";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import prisma from "../../../../lib/prisma";
 
 ChartJS.register(
   CategoryScale,
@@ -370,8 +371,6 @@ export const getServerSideProps = async (ctx) => {
   if (!session) {
     return { redirect: { destination: "/auth/login" } };
   }
-
-  const prisma = new PrismaClient();
 
   const user = await prisma.user.findUnique({
     where: {

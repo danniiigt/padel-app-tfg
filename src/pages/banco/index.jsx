@@ -9,15 +9,14 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect } from "react";
-import prisma from "../../../../lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import AddIcon from "@mui/icons-material/Add";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
-import { DashboardDepositos } from "../../../shared/components/DashboardDepositos";
-import { DashboardRetiradas } from "../../../shared/components/DashboardRetiradas";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import { DashboardDepositos } from "@/shared/components/DashboardDepositos";
+import { DashboardRetiradas } from "@/shared/components/DashboardRetiradas";
+import prisma from "../../../lib/prisma";
 
 const BancoPage = ({
   user,
@@ -28,6 +27,8 @@ const BancoPage = ({
   transaccionesDepositos = JSON.parse(transaccionesDepositos);
   transaccionesRetiradas = JSON.parse(transaccionesRetiradas);
 
+  const esAdmin = user.role.toLowerCase() == "admin";
+
   const router = useRouter();
 
   const breadcrumbsItems = [
@@ -36,7 +37,7 @@ const BancoPage = ({
       text: "Dashboard",
     },
     {
-      link: "/admin/banco",
+      link: "/banco",
       text: "Banco",
     },
   ];
@@ -59,7 +60,11 @@ const BancoPage = ({
         >
           Tus transacciones
         </Typography>
-        <Typography>Aqui puedes gestionar tus depósitos y retiros</Typography>
+        {esAdmin ? (
+          <Typography>Aqui puedes gestionar tus depósitos y retiros</Typography>
+        ) : (
+          <Typography>Aqui puedes gestionar tus movimientos</Typography>
+        )}
       </Box>
 
       <Grid container mt={0} spacing={5}>
@@ -101,7 +106,7 @@ const BancoPage = ({
           >
             <Tooltip title="Añadir saldo">
               <IconButton
-                onClick={() => handleRedirect("/admin/banco/depositar")}
+                onClick={() => handleRedirect("/banco/depositar")}
                 sx={{
                   width: "100%",
                   height: "100%",
@@ -112,30 +117,34 @@ const BancoPage = ({
                 <AddIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Retirar saldo">
-              <IconButton
-                onClick={() => handleRedirect("/admin/banco/retirar")}
-                sx={{
-                  width: "100%",
-                  height: "100%",
-                  flexGrow: 1,
-                  borderRadius: 1.5,
-                }}
-              >
-                <AccountBalanceWalletOutlinedIcon />
-              </IconButton>
-            </Tooltip>
+            {esAdmin && (
+              <Tooltip title="Retirar saldo">
+                <IconButton
+                  onClick={() => handleRedirect("/banco/retirar")}
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    flexGrow: 1,
+                    borderRadius: 1.5,
+                  }}
+                >
+                  <AccountBalanceWalletOutlinedIcon />
+                </IconButton>
+              </Tooltip>
+            )}
           </Stack>
         </Grid>
       </Grid>
 
       <Grid container mt={1} spacing={3}>
-        <Grid item xs={6}>
+        <Grid item xs={esAdmin ? 6 : 12}>
           <DashboardDepositos depositos={transaccionesDepositos} />
         </Grid>
-        <Grid item xs={6}>
-          <DashboardRetiradas retiradas={transaccionesRetiradas} />
-        </Grid>
+        {esAdmin && (
+          <Grid item xs={6}>
+            <DashboardRetiradas retiradas={transaccionesRetiradas} />
+          </Grid>
+        )}
       </Grid>
     </MainLayout>
   );
@@ -183,9 +192,9 @@ export const getServerSideProps = async (ctx) => {
     },
   });
 
-  if (!session || user.role !== "ADMIN") {
-    return { redirect: { destination: "/auth/login" } };
-  }
+  // if (!session || user.role !== "ADMIN") {
+  //   return { redirect: { destination: "/auth/login" } };
+  // }
 
   return {
     props: {

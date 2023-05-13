@@ -48,10 +48,8 @@ export const authOptions = {
           });
 
         if (user) {
-          console.log(user);
           return user;
         } else {
-          console.log("NAUR!");
           return false;
         }
       },

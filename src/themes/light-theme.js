@@ -48,4 +48,14 @@ export const lightTheme = createTheme({
       '"Segoe UI Symbol"',
     ].join(","),
   },
+
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          overflowX: "hidden",
+        },
+      },
+    },
+  },
 });

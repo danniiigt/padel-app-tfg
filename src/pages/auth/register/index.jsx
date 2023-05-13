@@ -37,7 +37,6 @@ const RegisterPage = () => {
     const email = data.get("email");
     const password = data.get("password");
     const passwordConfirm = data.get("password-confirm");
-    console.log(name, email, password, passwordConfirm);
 
     if (name.length < 3) {
       setNameError(true);
@@ -168,9 +167,7 @@ const RegisterPage = () => {
               onClick={() =>
                 signIn("google", {
                   callbackUrl: `${window.location.origin}/admin`,
-                }).then(() => {
-                  console.log("redirijimos..!!");
-                })
+                }).then(() => {})
               }
             >
               <img

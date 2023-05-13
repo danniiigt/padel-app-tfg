@@ -2,8 +2,6 @@ import { Box, Divider, Stack, Typography } from "@mui/material";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 
 export const DashboardDepositos = ({ depositos }) => {
-  console.log(depositos);
-
   return (
     <>
       <Box

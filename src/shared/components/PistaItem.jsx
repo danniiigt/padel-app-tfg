@@ -96,7 +96,7 @@ export const PistaItem = ({ pista }) => {
             <Stack>
               {pista.telefono && (
                 <Tooltip title="Llamar">
-                  <Link href={`tel:601361279`}>
+                  <Link href={`tel:+34601361279`}>
                     <IconButton>
                       <CallOutlinedIcon color="primary" />
                     </IconButton>

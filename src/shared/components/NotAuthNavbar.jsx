@@ -2,7 +2,7 @@ import { AppBar, Button, Stack, Toolbar, Typography } from "@mui/material";
 import Link from "next/link";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 
-export const NotAuthNavbar = () => {
+export const NotAuthNavbar = ({ message }) => {
   return (
     <>
       <AppBar>
@@ -64,26 +64,6 @@ export const NotAuthNavbar = () => {
                   Buscador
                 </Link>
               </Typography>
-              <Typography
-                variant="body2"
-                color="#d9d9d9"
-                sx={{
-                  "&:hover": {
-                    color: "white",
-                  },
-                  transition: "all 0.3s ease",
-                }}
-              >
-                <Link
-                  href="/soporte"
-                  style={{
-                    color: "inherit",
-                    textDecoration: "none",
-                  }}
-                >
-                  Soporte
-                </Link>
-              </Typography>
             </Stack>
 
             <Stack
@@ -109,6 +89,7 @@ export const NotAuthNavbar = () => {
             </Stack>
           </Stack>
         </Toolbar>
+        {message}
       </AppBar>
       <Toolbar />
     </>

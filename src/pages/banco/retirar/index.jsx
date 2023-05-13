@@ -1,34 +1,42 @@
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth";
-import prisma from "../../../../../lib/prisma";
 import { MainLayout } from "@/shared/layouts/MainLayout";
 import {
   Box,
   Button,
   InputAdornment,
+  List,
+  ListItem,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import CloseIcon from "@mui/icons-material/Close";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import prisma from "../../../../lib/prisma";
 
-const DepositarPage = ({ user }) => {
+const RetirarPage = ({ user }) => {
   user = JSON.parse(user);
   const router = useRouter();
 
   const [amountValue, setAmountValue] = useState();
 
   const checkAmountValue = () => {
-    if (amountValue < 10) {
-      setAmountValue(10);
+    if (amountValue < 100) {
+      setAmountValue(100);
     }
 
-    if (amountValue > 1000) {
-      setAmountValue(1000);
+    if (user.saldo < 1000) {
+      if (amountValue > user.saldo) {
+        setAmountValue(user.saldo);
+      }
+    } else {
+      if (amountValue > 1000) {
+        setAmountValue(1000);
+      }
     }
   };
 
@@ -47,43 +55,41 @@ const DepositarPage = ({ user }) => {
       text: "Dashboard",
     },
     {
-      link: "/admin/banco",
+      link: "/banco",
       text: "Banco",
     },
     {
-      link: "/admin/banco/depositar",
-      text: "Depositar",
+      link: "/banco/retirar",
+      text: "Retirar",
     },
   ];
 
-  const handleDepositPaypal = async (details) => {
-    if (details?.status?.toUpperCase() == "COMPLETED") {
-      const res = await fetch("/api/transacciones", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          amount: Number(details.purchase_units[0].amount.value),
-          tipo: "Depósito",
-          usuarioId: user.id,
-          paypalId: details.id,
-        }),
-      });
+  const handleRetiro = async () => {
+    const res = await fetch("/api/transacciones", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        amount: amountValue,
+        tipo: "Retiro",
+        usuarioId: user.id,
+        estado: "Pendiente",
+      }),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (res.status == 200) {
-        toast.success(data.message);
-        router.push("/admin/banco");
-      } else {
-        toast.error(data.message);
-      }
+    if (res.status == 200) {
+      toast.success(data.message);
+      router.push("/banco");
+    } else {
+      toast.error(data.message);
     }
   };
 
   useEffect(() => {
-    document.title = "Depositar - Padel App";
+    document.title = "Retirar - Padel App";
   }, []);
 
   return (
@@ -128,8 +134,8 @@ const DepositarPage = ({ user }) => {
             },
 
             inputProps: {
-              min: 10,
-              max: 1000,
+              min: 100,
+              max: user.saldo > 1000 ? 1000 : user.saldo,
             },
 
             startAdornment: (
@@ -174,57 +180,62 @@ const DepositarPage = ({ user }) => {
           </Button>
         </Stack>
       </Stack>
-      <Stack
-        mt={3}
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <Typography>Depósito mínimo de 10€ y máximo de 1000€</Typography>
-
-        <PayPalScriptProvider
-          options={{
-            "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
-            currency: process.env.NEXT_PUBLIC_PLATFORM_CURRENCY,
-            components: "buttons",
+      <Stack mt={3} direction="row" spacing={3}>
+        <Box
+          sx={{
+            height: "100%",
+            padding: 2,
+            backgroundColor: "background.paper",
+            borderRadius: 2,
+            boxShadow:
+              "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
           }}
         >
-          <PayPalButtons
-            style={style}
-            disabled={false}
-            forceReRender={[amountValue]}
-            createOrder={(data, actions) => {
-              return actions.order
-                .create({
-                  purchase_units: [
-                    {
-                      amount: {
-                        currency_code:
-                          process.env.NEXT_PUBLIC_PLATFORM_CURRENCY,
-                        value: amountValue,
-                      },
-                    },
-                  ],
-                })
-                .then((orderId) => {
-                  // Your code here after create the order
-                  return orderId;
-                });
-            }}
-            onCancel={(data, actions) => {
-              console.log("onCancel", data, actions);
-            }}
-            onError={(err) => {
-              console.log("onError", err);
-            }}
-            onApprove={function (data, actions) {
-              return actions.order.capture().then(function (details) {
-                handleDepositPaypal(details);
-                console.log(details);
-              });
-            }}
-          />
-        </PayPalScriptProvider>
+          <List disablePadding>
+            <ListItem>
+              <Typography>
+                Saldo disponible para retirar:{" "}
+                <span style={{ fontWeight: 600 }}>
+                  {Intl.NumberFormat("es-ES", {
+                    style: "currency",
+                    currency: "EUR",
+                  }).format(user.saldo)}
+                </span>
+              </Typography>
+            </ListItem>
+            <ListItem>
+              <Typography>
+                Retiro mínimo de 100,00€ y máximo de 1000,00€
+              </Typography>
+            </ListItem>
+
+            <ListItem>
+              <Typography>
+                Los retiros se procesan en un plazo de 24 horas laborables
+              </Typography>
+            </ListItem>
+          </List>
+        </Box>
+
+        <Box
+          sx={{
+            height: "100%",
+            padding: 2,
+            backgroundColor: "background.paper",
+            borderRadius: 2,
+            boxShadow:
+              "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+          }}
+        >
+          <Button
+            variant=""
+            sx={{ height: "100%", border: "1px solid #dbdbdb" }}
+            endIcon={<ExitToAppIcon />}
+            onClick={handleRetiro}
+          >
+            SOLICITAR RETIRO
+          </Button>
+        </Box>
       </Stack>
     </MainLayout>
   );
@@ -261,4 +272,4 @@ export const getServerSideProps = async (ctx) => {
   };
 };
 
-export default DepositarPage;
+export default RetirarPage;

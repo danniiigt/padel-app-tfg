@@ -28,13 +28,27 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import Person2Icon from "@mui/icons-material/Person2";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
+import { useEffect } from "react";
+import CloseIcon from "@mui/icons-material/Close";
+import { toast } from "react-toastify";
 
-export const AdminNavbar = ({ user, breadcrumbsItems }) => {
+export const AdminNavbar = ({ user, breadcrumbsItems, message }) => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorNotifEl, setAnchorNotifEl] = useState(null);
+  const [registros, setRegistros] = useState([]);
   const router = useRouter();
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const handleNotifMenu = (event) => {
+    setAnchorNotifEl(event.currentTarget);
+  };
+
+  const handleCloseNotif = () => {
+    setAnchorNotifEl(null);
   };
 
   const handleClose = () => {
@@ -44,6 +58,43 @@ export const AdminNavbar = ({ user, breadcrumbsItems }) => {
   const handleRedirect = (url) => {
     router.push(url);
   };
+
+  const fetchRegistros = async () => {
+    const registros = await fetch("/api/registros", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        usuarioId: user.id,
+        leido: false,
+      }),
+    });
+
+    const data = await registros.json();
+    setRegistros(data);
+  };
+
+  const marcarLeido = async () => {
+    await registros.forEach(async (registro) => {
+      const res = await fetch(`/api/registros/${registro.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          leido: true,
+        }),
+      });
+    });
+
+    toast.success("Notificaciones marcadas como leídas");
+    setRegistros([]);
+  };
+
+  useEffect(() => {
+    fetchRegistros();
+  }, []);
 
   return (
     <>
@@ -140,7 +191,7 @@ export const AdminNavbar = ({ user, breadcrumbsItems }) => {
                 }}
               >
                 <Link
-                  href="/admin/banco"
+                  href="/banco"
                   style={{ color: "inherit", textDecoration: "none" }}
                 >
                   Banco
@@ -161,18 +212,18 @@ export const AdminNavbar = ({ user, breadcrumbsItems }) => {
                 </IconButton>
               </Tooltip>
               <Tooltip title="Notificaciónes">
-                <IconButton sx={{ color: "#eeee", mr: 1 }}>
-                  <Badge badgeContent={3} color="secondary">
+                <IconButton
+                  size="small"
+                  sx={{ color: "#eeee", mr: 1 }}
+                  onClick={handleNotifMenu}
+                >
+                  <Badge badgeContent={registros.length} color="secondary">
                     <NotificationsIcon />
                   </Badge>
                 </IconButton>
               </Tooltip>
               <Tooltip title="Tu perfil">
-                <IconButton
-                  size="small"
-                  sx={{ width: 28, height: 28 }}
-                  onClick={handleMenu}
-                >
+                <IconButton sx={{ width: 28, height: 28 }} onClick={handleMenu}>
                   <Avatar
                     alt="Tu imagen"
                     src={user.image}
@@ -219,12 +270,6 @@ export const AdminNavbar = ({ user, breadcrumbsItems }) => {
                   </ListItemIcon>
                   <ListItemText>Perfil</ListItemText>
                 </MenuItem>
-                <MenuItem onClick={() => handleRedirect("/soporte")}>
-                  <ListItemIcon>
-                    <SupportAgentIcon sx={{ mr: 2 }} />
-                  </ListItemIcon>
-                  <ListItemText>Soporte</ListItemText>
-                </MenuItem>
                 <MenuItem onClick={() => handleRedirect("/admin/dashboard")}>
                   <ListItemIcon>
                     <DashboardIcon sx={{ mr: 2 }} />
@@ -248,9 +293,96 @@ export const AdminNavbar = ({ user, breadcrumbsItems }) => {
                   <ListItemText>Cerrar Sesión</ListItemText>
                 </MenuItem>
               </Menu>
+
+              <Menu
+                sx={{
+                  mt: "35px",
+                  maxWidth: 400,
+                }}
+                id="menu-notif"
+                anchorEl={anchorNotifEl}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorNotifEl)}
+                onClose={handleCloseNotif}
+              >
+                <MenuItem disableTouchRipple disableRipple>
+                  <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    spacing={2}
+                    sx={{ width: "100%" }}
+                  >
+                    <ListItemText>Notificaciones</ListItemText>
+                    <Tooltip title="Marcar como leído">
+                      <IconButton size="small" onClick={marcarLeido}>
+                        <DoneAllIcon color="primary" fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </Stack>
+                </MenuItem>
+                <Divider />
+
+                <Box sx={{ maxHeight: 300, overflowY: "auto" }}>
+                  {registros.map((registro) => (
+                    <MenuItem sx={{ maxWidth: "100%" }} key={registro.id}>
+                      <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        spacing={2}
+                        sx={{ maxWidth: "100%" }}
+                      >
+                        <ListItemText>
+                          <Stack>
+                            <Typography
+                              variant="body2"
+                              sx={{ fontSize: 11, fontWeight: 300 }}
+                              noWrap
+                            >
+                              {new Date(registro.fecha).toLocaleDateString(
+                                "es-ES",
+                                {
+                                  weekday: "long",
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                }
+                              )}
+                            </Typography>
+                            <Typography variant="body2" noWrap>
+                              {registro.accion}
+                            </Typography>
+                          </Stack>
+                        </ListItemText>
+                      </Stack>
+                    </MenuItem>
+                  ))}
+
+                  {registros.length === 0 && (
+                    <MenuItem sx={{ maxWidth: "100%" }}>
+                      <Stack alignItems="center" spacing={2}>
+                        <CloseIcon fontSize="large" />
+                        <Typography variant="body2">
+                          ¡No hay notificaciones!
+                        </Typography>
+                      </Stack>
+                    </MenuItem>
+                  )}
+                </Box>
+              </Menu>
             </Box>
           </Stack>
         </Toolbar>
+        {message}
       </AppBar>
       <Toolbar />
 

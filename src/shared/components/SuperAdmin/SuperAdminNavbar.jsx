@@ -24,7 +24,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import EmailIcon from "@mui/icons-material/Email";
 
-export const SuperAdminNavbar = ({ user, breadcrumbsItems }) => {
+export const SuperAdminNavbar = ({ user, breadcrumbsItems, message }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMenu = (event) => {
@@ -310,6 +310,7 @@ export const SuperAdminNavbar = ({ user, breadcrumbsItems }) => {
           </Box>
         </>
       )}
+      {message}
     </>
   );
 };

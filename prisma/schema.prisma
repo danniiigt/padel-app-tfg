@@ -115,6 +115,7 @@ model Registro {
     descripcion String // EJEMPLO: Se ha creado la pista con el nombre de "Pista 1"
     usuario     User     @relation(fields: [usuarioId], references: [id])
     usuarioId   String
+    leido       Boolean  @default(false)
 }
 
 model Valoracion {

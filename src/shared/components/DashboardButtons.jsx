@@ -53,7 +53,7 @@ export const DashboardButtons = () => {
       </Grid>
       <Grid item xs={4}>
         <DashboardButton
-          link={"/admin/banco"}
+          link={"/banco"}
           text={"Banco"}
           delay={875}
           icon={

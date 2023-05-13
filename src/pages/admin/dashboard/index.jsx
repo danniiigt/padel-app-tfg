@@ -74,7 +74,7 @@ const AdminPage = ({ user, registros }) => {
             </Box>
           </Link>
           <Link
-            href="/admin/banco/retirar"
+            href="/banco/retirar"
             style={{
               textDecoration: "none",
               color: "inherit",

@@ -707,7 +707,7 @@ const AddPista = ({ user, step }) => {
                   <Divider />
 
                   <Button type="submit" variant="contained" color="primary">
-                    AÑADIR PISTAS
+                    AÑADIR EVENTOS
                   </Button>
                 </Stack>
               </LocalizationProvider>

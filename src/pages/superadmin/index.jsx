@@ -6,6 +6,8 @@ import { authOptions } from "../api/auth/[...nextauth]";
 import prisma from "../../../lib/prisma";
 import { UsuariosTable } from "@/shared/components/SuperAdmin/UsuariosTable";
 import { PistasTable } from "@/shared/components/SuperAdmin/PistasTable";
+import { TransaccionesTable } from "@/shared/components/SuperAdmin/TransaccionesTable";
+import { useRouter } from "next/router";
 
 const SuperAdminPage = ({ user, users, pistas, transacciones }) => {
   user = JSON.parse(user);
@@ -13,7 +15,11 @@ const SuperAdminPage = ({ user, users, pistas, transacciones }) => {
   pistas = JSON.parse(pistas);
   transacciones = JSON.parse(transacciones);
 
-  console.log(pistas);
+  const router = useRouter();
+
+  const reloadPage = () => {
+    window.location.reload();
+  };
 
   useEffect(() => {
     document.title = "Panel De Control - Padel App";
@@ -27,6 +33,13 @@ const SuperAdminPage = ({ user, users, pistas, transacciones }) => {
         </Grid>
         <Grid item xs={12}>
           <PistasTable pistas={pistas} />
+        </Grid>
+
+        <Grid item xs={12}>
+          <TransaccionesTable
+            transacciones={transacciones}
+            reloadPage={reloadPage}
+          />
         </Grid>
       </Grid>
     </MainLayout>
@@ -59,7 +72,10 @@ export const getServerSideProps = async (ctx) => {
     },
   });
   const pistas = await prisma.pista.findMany({
-    // INCLUYYE EL NOMBRE DEL USUARIO
+    where: {
+      activa: true,
+    },
+
     include: {
       usuario: {
         select: {
@@ -80,7 +96,21 @@ export const getServerSideProps = async (ctx) => {
       },
     },
   });
-  const transacciones = await prisma.transaccion.findMany();
+  const transacciones = await prisma.transaccion.findMany({
+    orderBy: {
+      fecha: "desc",
+    },
+
+    include: {
+      usuario: {
+        select: {
+          name: true,
+          paypalId: true,
+          email: true,
+        },
+      },
+    },
+  });
 
   if (user.role !== "SUPERADMIN") {
     return { redirect: { destination: "/home" } };

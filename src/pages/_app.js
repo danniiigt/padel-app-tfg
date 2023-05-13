@@ -15,7 +15,10 @@ function Loading() {
 
   useEffect(() => {
     const handleStart = (url) => url !== router.asPath && setLoading(true);
+
     const handleComplete = (url) => url === router.asPath && setLoading(false);
+
+    console.log({ handleStart, handleComplete });
 
     router.events.on("routeChangeStart", handleStart);
     router.events.on("routeChangeComplete", handleComplete);
