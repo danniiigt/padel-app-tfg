@@ -21,6 +21,8 @@ export const UserEditCard = ({ user: userProps }) => {
   const [nombreError, setNombreError] = useState(false);
   const [nombreNegocioError, setNombreNegocioError] = useState(false);
 
+  const [esAdministrador, setEsAdministrador] = useState(user.role === "ADMIN");
+
   const handleCambiarNombre = async () => {
     setNombreError(false);
 
@@ -150,54 +152,56 @@ export const UserEditCard = ({ user: userProps }) => {
             )}
           </Stack>
         </Stack>
-        <Stack direction="row" justifyContent="space-between" spacing={4}>
-          <Typography>Nombre de negocio</Typography>
-          <Stack direction="row" spacing={1}>
-            {editNombreNegocio && (
-              <>
-                <TextField
-                  label="Nombre de Negocio"
-                  variant="outlined"
-                  size="small"
-                  value={nombreNegocio}
-                  error={nombreNegocioError}
-                  onChange={(e) => {
-                    setNombreNegocio(e.target.value);
-                    setNombreNegocioError(false);
-                  }}
-                  autoFocus
-                />
-                <Button
-                  size="small"
-                  onClick={() => setEditNombreNegocio(false)}
-                >
-                  Cancelar
-                </Button>
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={handleCambiarNombreNegocio}
-                >
-                  Guardar
-                </Button>
-              </>
-            )}
+        {esAdministrador && (
+          <Stack direction="row" justifyContent="space-between" spacing={4}>
+            <Typography>Nombre de negocio</Typography>
+            <Stack direction="row" spacing={1}>
+              {editNombreNegocio && (
+                <>
+                  <TextField
+                    label="Nombre de Negocio"
+                    variant="outlined"
+                    size="small"
+                    value={nombreNegocio}
+                    error={nombreNegocioError}
+                    onChange={(e) => {
+                      setNombreNegocio(e.target.value);
+                      setNombreNegocioError(false);
+                    }}
+                    autoFocus
+                  />
+                  <Button
+                    size="small"
+                    onClick={() => setEditNombreNegocio(false)}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={handleCambiarNombreNegocio}
+                  >
+                    Guardar
+                  </Button>
+                </>
+              )}
 
-            {!editNombreNegocio && (
-              <>
-                <Typography fontWeight={300}>
-                  {user.businessName || "Sin establecer"}
-                </Typography>
-                <Tooltip
-                  title="Editar"
-                  onClick={() => setEditNombreNegocio(true)}
-                >
-                  <EditIcon fontSize="small" sx={{ cursor: "pointer" }} />
-                </Tooltip>
-              </>
-            )}
+              {!editNombreNegocio && (
+                <>
+                  <Typography fontWeight={300}>
+                    {user.businessName || "Sin establecer"}
+                  </Typography>
+                  <Tooltip
+                    title="Editar"
+                    onClick={() => setEditNombreNegocio(true)}
+                  >
+                    <EditIcon fontSize="small" sx={{ cursor: "pointer" }} />
+                  </Tooltip>
+                </>
+              )}
+            </Stack>
           </Stack>
-        </Stack>
+        )}
         <Stack direction="row" justifyContent="space-between" spacing={4}>
           <Typography>Email</Typography>
           <Stack direction="row" spacing={1}>

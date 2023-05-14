@@ -12,8 +12,18 @@ import {
   Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import { EditUsuarioDialog } from "./EditUsuarioDialog";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import { ConfirmDialog } from "../ConfirmDialog";
+import { BorrarUsuarioDialog } from "./BorrarUsuarioDialog";
 
-export const UsuariosTable = ({ users }) => {
+export const UsuariosTable = ({ users: usersProps }) => {
+  const [users, setUsers] = useState(usersProps);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [deleteUser, setDeleteUser] = useState(null);
+
   function createData(id, name, businessName, email, role, saldo) {
     return { id, name, businessName, email, role, saldo };
   }
@@ -28,6 +38,49 @@ export const UsuariosTable = ({ users }) => {
       user.saldo
     );
   });
+
+  const closeEdit = () => {
+    setSelectedUser(null);
+  };
+
+  const closeDelete = () => {
+    setDeleteUser(null);
+  };
+
+  const actualizarUsuario = async (usuario) => {
+    const res = await fetch("/api/user", {
+      method: "PUT",
+      body: JSON.stringify({ ...usuario }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
+
+    if (res.status == 200) {
+      toast.success("Usuario actualizado");
+      setUsers([usuario, ...users.filter((user) => user.id !== usuario.id)]);
+      closeEdit();
+    }
+  };
+
+  const deleteUsuario = async (usuario) => {
+    const res = await fetch(`/api/user/${usuario.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
+
+    if (res.status == 200) {
+      toast.success("Usuario borrado");
+      setUsers(users.filter((user) => user.id !== usuario.id));
+      closeDelete();
+    }
+  };
 
   return (
     <>
@@ -71,7 +124,7 @@ export const UsuariosTable = ({ users }) => {
               <TableCell align="left">Email</TableCell>
               <TableCell align="left">Rol</TableCell>
               <TableCell align="left">Saldo</TableCell>
-              <TableCell align="left">Eliminar</TableCell>
+              <TableCell align="left">Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -93,17 +146,42 @@ export const UsuariosTable = ({ users }) => {
                   }).format(row.saldo)}
                 </TableCell>
                 <TableCell align="center">
-                  <Tooltip title="Eliminar Pista">
-                    <IconButton size="small">
-                      <DeleteIcon fontSize="small" color="error" />
-                    </IconButton>
-                  </Tooltip>
+                  <Stack direction="row">
+                    <Tooltip title="Editar Usuario">
+                      <IconButton
+                        size="small"
+                        onClick={() => setSelectedUser(row)}
+                      >
+                        <EditIcon fontSize="small" color="primary" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Eliminar Usuario">
+                      <IconButton
+                        onClick={() => setDeleteUser(row)}
+                        size="small"
+                      >
+                        <DeleteIcon fontSize="small" color="error" />
+                      </IconButton>
+                    </Tooltip>
+                  </Stack>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </Stack>
+
+      <EditUsuarioDialog
+        usuario={selectedUser}
+        closeEdit={closeEdit}
+        actualizarUsuario={actualizarUsuario}
+      />
+
+      <BorrarUsuarioDialog
+        usuario={deleteUser}
+        closeDelete={closeDelete}
+        eliminarUsuario={deleteUsuario}
+      />
     </>
   );
 };

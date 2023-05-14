@@ -102,61 +102,10 @@ export const SuperAdminNavbar = ({ user, breadcrumbsItems, message }) => {
                 }}
               >
                 <Link
-                  href="/superadmin/usuarios"
+                  href="/superadmin"
                   style={{ color: "inherit", textDecoration: "none" }}
                 >
-                  Usuarios
-                </Link>
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{
-                  "&:hover": {
-                    color: "#eeee",
-                  },
-                  transition: "all 0.3s ease",
-                }}
-              >
-                <Link
-                  href="/superadmin/pistas"
-                  style={{ color: "inherit", textDecoration: "none" }}
-                >
-                  Pistas
-                </Link>
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{
-                  "&:hover": {
-                    color: "#eeee",
-                  },
-                  transition: "all 0.3s ease",
-                }}
-              >
-                <Link
-                  href="/superadmin/transacciones"
-                  style={{ color: "inherit", textDecoration: "none" }}
-                >
-                  Transacciones
-                </Link>
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{
-                  "&:hover": {
-                    color: "#eeee",
-                  },
-                  transition: "all 0.3s ease",
-                }}
-              >
-                <Link
-                  href="/superadmin/transacciones"
-                  style={{ color: "inherit", textDecoration: "none" }}
-                >
-                  Soporte
+                  Inicio
                 </Link>
               </Typography>
             </Stack>
@@ -168,13 +117,6 @@ export const SuperAdminNavbar = ({ user, breadcrumbsItems, message }) => {
               alignItems="center"
               gap={3}
             >
-              <Tooltip title="Mensajes de Soporte">
-                <IconButton sx={{ color: "#eeee", mr: 1 }}>
-                  <Badge badgeContent={3} color="secondary">
-                    <EmailIcon />
-                  </Badge>
-                </IconButton>
-              </Tooltip>
               <Tooltip title="Tu perfil">
                 <IconButton
                   size="small"

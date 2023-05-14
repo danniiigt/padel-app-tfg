@@ -75,7 +75,11 @@ export const getServerSideProps = async (ctx) => {
     });
   }
 
-  const pistas = await prisma.pista.findMany();
+  const pistas = await prisma.pista.findMany({
+    where: {
+      activa: true,
+    },
+  });
 
   return {
     props: {

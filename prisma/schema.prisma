@@ -45,6 +45,7 @@ model User {
     role          String        @default("USER")
     saldo         Decimal       @default(0)
     paypalId      String?
+    activo        Boolean       @default(true)
     accounts      Account[]
     sessions      Session[]
     pista         Pista[]

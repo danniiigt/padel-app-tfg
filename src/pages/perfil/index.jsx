@@ -1,13 +1,14 @@
 import { MainLayout } from "@/shared/layouts/MainLayout";
-import React, { useEffect, useState } from "react";
-import prisma from "../../../../lib/prisma";
+import { useEffect, useState } from "react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { UserEditCard } from "@/shared/components/UserEditCard";
-import { Box, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
+import { Box, Stack, Tab, Tabs, Typography } from "@mui/material";
 import { UserBankEditCard } from "@/shared/components/UserBankEditCard";
 import ContactSupportIcon from "@mui/icons-material/ContactSupport";
 import Link from "next/link";
+import prisma from "../../../lib/prisma";
+import { UserEditImage } from "@/shared/components/UserEditImage";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -49,10 +50,12 @@ function a11yProps(index) {
   };
 }
 
-const PerfilPage = ({ user }) => {
-  user = JSON.parse(user);
-
+const PerfilPage = ({ user: userProps }) => {
+  const [user, setUser] = useState(JSON.parse(userProps));
   const [value, setValue] = useState(0);
+  const [esAdministrador, setEsAdministrador] = useState(user.role === "ADMIN");
+
+  console.log(user.image);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -103,7 +106,10 @@ const PerfilPage = ({ user }) => {
             }}
           >
             <Tab disableRipple label="General" {...a11yProps(0)} />
-            <Tab disableRipple label="Retiradas" {...a11yProps(1)} />
+            {esAdministrador && (
+              <Tab disableRipple label="Retiradas" {...a11yProps(1)} />
+            )}
+            <Tab disableRipple label="Imagen" {...a11yProps(2)} />
           </Tabs>
         </Box>
 
@@ -118,15 +124,28 @@ const PerfilPage = ({ user }) => {
           >
             <UserEditCard user={user} />
           </TabPanel>
+          {esAdministrador && (
+            <TabPanel
+              value={value}
+              index={1}
+              sx={{ width: "100%" }}
+              className="
+            animate__animated animate__fadeIn
+          "
+            >
+              <UserBankEditCard user={user} />
+            </TabPanel>
+          )}
+
           <TabPanel
             value={value}
-            index={1}
+            index={esAdministrador ? 2 : 1}
             sx={{ width: "100%" }}
             className="
             animate__animated animate__fadeIn
           "
           >
-            <UserBankEditCard user={user} />
+            <UserEditImage user={user} />
           </TabPanel>
         </Box>
       </Stack>
@@ -154,9 +173,9 @@ export const getServerSideProps = async (ctx) => {
     },
   });
 
-  if (!session || user.role !== "ADMIN") {
-    return { redirect: { destination: "/auth/login" } };
-  }
+  // if (!session || user.role !== "ADMIN") {
+  //   return { redirect: { destination: "/auth/login" } };
+  // }
 
   return {
     props: {

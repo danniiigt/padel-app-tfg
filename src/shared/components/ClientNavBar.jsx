@@ -218,7 +218,7 @@ export const ClientNavBar = ({ user, message }) => {
 
                 <Divider sx={{ marginY: "3px !important" }} />
 
-                <MenuItem onClick={() => handleRedirect("/admin/perfil")}>
+                <MenuItem onClick={() => handleRedirect("/perfil")}>
                   <ListItemIcon>
                     <Person2Icon sx={{ mr: 2 }} />
                   </ListItemIcon>
@@ -239,7 +239,7 @@ export const ClientNavBar = ({ user, message }) => {
                   <ListItemText>Reservas</ListItemText>
                 </MenuItem>
 
-                <MenuItem onClick={() => handleRedirect("/mispuntos")}>
+                <MenuItem onClick={() => handleRedirect("/ranking")}>
                   <ListItemIcon>
                     <CardGiftcardIcon sx={{ mr: 2 }} />
                   </ListItemIcon>

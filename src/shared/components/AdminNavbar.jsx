@@ -264,7 +264,7 @@ export const AdminNavbar = ({ user, breadcrumbsItems, message }) => {
 
                 <Divider sx={{ marginY: "3px !important" }} />
 
-                <MenuItem onClick={() => handleRedirect("/admin/perfil")}>
+                <MenuItem onClick={() => handleRedirect("/perfil")}>
                   <ListItemIcon>
                     <Person2Icon sx={{ mr: 2 }} />
                   </ListItemIcon>

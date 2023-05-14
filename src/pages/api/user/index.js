@@ -13,7 +13,8 @@ export default function handler(req, res) {
 }
 
 const handleActualizarUsuario = async (req, res) => {
-  const { id, name, businessName, paypalId } = req.body;
+  const { id, name, role, saldo, businessName, paypalId, activo, image } =
+    req.body;
 
   const user = await prisma.user.update({
     where: {
@@ -23,6 +24,10 @@ const handleActualizarUsuario = async (req, res) => {
       name: name,
       businessName: businessName,
       paypalId: paypalId,
+      role: role,
+      saldo: saldo,
+      activo: activo,
+      image: image,
     },
   });
 
