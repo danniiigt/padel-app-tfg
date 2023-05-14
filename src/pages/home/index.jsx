@@ -10,6 +10,7 @@ import { useEffect } from "react";
 
 const HomePage = ({ user, pistas }) => {
   user = JSON.parse(user);
+  pistas = JSON.parse(pistas);
 
   useEffect(() => {
     document.title = "Home - Padel App";
@@ -76,14 +77,10 @@ export const getServerSideProps = async (ctx) => {
 
   const pistas = await prisma.pista.findMany();
 
-  if (user) {
-    user = JSON.stringify(user);
-  }
-
   return {
     props: {
-      pistas,
-      user: user || null,
+      pistas: JSON.stringify(pistas),
+      user: JSON.stringify(user) || null,
     },
   };
 };

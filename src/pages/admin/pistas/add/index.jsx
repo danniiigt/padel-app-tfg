@@ -50,7 +50,7 @@ const AddPista = ({ user, step }) => {
   const initialPistaForm = {
     nombre: "",
     descripcion: "",
-    imagen: "",
+    imagenes: [],
     ubicacionLatitud: "",
     ubicacionLongitud: "",
     telefono: "",
@@ -84,7 +84,7 @@ const AddPista = ({ user, step }) => {
       .then((data) => {
         setPistaForm({
           ...pistaForm,
-          imagen: data.secure_url,
+          imagenes: [...pistaForm.imagenes, data.secure_url],
         });
       });
   };
@@ -136,7 +136,6 @@ const AddPista = ({ user, step }) => {
       },
       body: JSON.stringify({
         ...pistaForm,
-        eventos: eventosFormateados,
         usuarioId: user.id,
       }),
     });
@@ -144,18 +143,9 @@ const AddPista = ({ user, step }) => {
     const data = await res.json();
 
     if (res.status === 200) {
-      toast.info(data.message, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
+      toast.success(data.message);
 
-      router.push("/admin");
+      router.push(`/admin/pistas/${data.pista.id}`);
     }
   };
 
@@ -381,7 +371,7 @@ const AddPista = ({ user, step }) => {
                       onChange={(newValue) => {
                         setPistaForm({
                           ...pistaForm,
-                          horarioApertura: `${newValue.$H}:${newValue.$m}`,
+                          horarioApertura: newValue.$d.toString().slice(16, 21),
                         });
                       }}
                     />
@@ -481,496 +471,651 @@ const AddPista = ({ user, step }) => {
             disableElevation
             disabled={!siguienteActivo}
             endIcon={<ChevronRightIcon />}
-            onClick={() => {
-              router.push(`/admin/pistas/add?step=${Number(step) + 1}`);
-              setSiguienteActivo(false);
-            }}
-          >
-            Siguiente
-          </Button>
-        </Box>
-      </MainLayout>
-    );
-  } else if (step == 2) {
-    return (
-      <MainLayout user={user}>
-        <Stack
-          mt={4}
-          spacing={12}
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          sx={{
-            backgroundColor: "background.paper",
-            p: "15px 20px",
-            borderRadius: 1.5,
-            boxShadow:
-              "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-            borderTop: "3px solid #3454D1",
-          }}
-        >
-          <Box>
-            <Typography variant="h5" fontWeight={600}>
-              Añadir pista
-            </Typography>
-            <Typography noWrap>
-              Tienes un total de {user.pista.length} pistas
-            </Typography>
-          </Box>
-          <Box sx={{ width: "100%" }}>
-            <Stepper sx={{ width: "100%" }} activeStep={step - 1}>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-          </Box>
-        </Stack>
-
-        <Grid container spacing={4} mt={0}>
-          <Grid item xs={5}>
-            <Box
-              component="form"
-              onSubmit={handleAñadirEvento}
-              sx={{
-                padding: "20px",
-                backgroundColor: "background.paper",
-                borderRadius: 1,
-                boxShadow:
-                  "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-              }}
-            >
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <Stack spacing={2}>
-                  <Box>
-                    <Typography variant="body2" fontWeight={300} mb={1.5}>
-                      *Añadir una fecha en múltiples días
-                    </Typography>
-                    <DateRangePicker
-                      calendars={2}
-                      disablePast={true}
-                      format="DD/MM"
-                      localeText={{ start: "Fecha Comienzo", end: "Fecha Fin" }}
-                      sx={{
-                        ".MuiOutlinedInput-input": {
-                          backgroundColor: "#f9f9f9",
-                        },
-                      }}
-                      onChange={(newValue) => {
-                        let fechas = {
-                          fechaInicio: "",
-                          fechaFin: "",
-                        };
-
-                        if (newValue[0]) {
-                          // FORMAT MUST BE YYYY-MM-DD WITH 0 IN FRONT OF SINGLE DIGIT MONTHS AND DAYS
-                          const date = new Date(newValue[0]);
-                          const month = date.getMonth() + 1;
-                          const day = date.getDate();
-                          const output =
-                            date.getFullYear() +
-                            "-" +
-                            (month < 10 ? "0" : "") +
-                            month +
-                            "-" +
-                            (day < 10 ? "0" : "") +
-                            day;
-
-                          fechas.fechaInicio = output;
-                        }
-
-                        if (newValue[1]) {
-                          // FORMAT MUST BE YYYY-MM-DD WITH 0 IN FRONT OF SINGLE DIGIT MONTHS AND DAYS
-                          const date = new Date(newValue[1]);
-                          const month = date.getMonth() + 1;
-                          const day = date.getDate();
-                          const output =
-                            date.getFullYear() +
-                            "-" +
-                            (month < 10 ? "0" : "") +
-                            month +
-                            "-" +
-                            (day < 10 ? "0" : "") +
-                            day;
-
-                          fechas.fechaFin = output;
-                        }
-
-                        setFechaEventoForm({
-                          ...fechaEventoForm,
-                          ...fechas,
-                        });
-                      }}
-                    />
-                  </Box>
-
-                  <Divider />
-
-                  <Box>
-                    <Typography variant="body2" fontWeight={300} mb={1.5}>
-                      *Añadir un horario en múltiples días
-                    </Typography>
-                    <MultiInputTimeRangeField
-                      ampm={false}
-                      format="HH:mm"
-                      slotProps={{
-                        textField: ({ position }) => ({
-                          label:
-                            position === "start"
-                              ? "Horario comienzo"
-                              : "Horario fin",
-                        }),
-                      }}
-                      sx={{
-                        ".MuiOutlinedInput-input": {
-                          backgroundColor: "#f9f9f9",
-                        },
-                      }}
-                      onChange={async (newValue) => {
-                        let horarios = {
-                          horarioInicio: "",
-                          horarioFin: "",
-                        };
-
-                        if (newValue[0]) {
-                          // FORMAT MUST BE HH:MM WITH 0 IN FRONT OF SINGLE DIGIT HOURS AND MINUTES
-                          const date = new Date(newValue[0]);
-                          const hours = date.getHours();
-                          const minutes = date.getMinutes();
-                          const output =
-                            (hours < 10 ? "0" : "") +
-                            hours +
-                            ":" +
-                            (minutes < 10 ? "0" : "") +
-                            minutes;
-
-                          horarios.horarioInicio = output;
-                        }
-
-                        if (newValue[1]) {
-                          // FORMAT MUST BE HH:MM WITH 0 IN FRONT OF SINGLE DIGIT HOURS AND MINUTES
-                          const date = new Date(newValue[1]);
-                          const hours = date.getHours();
-                          const minutes = date.getMinutes();
-                          const output =
-                            (hours < 10 ? "0" : "") +
-                            hours +
-                            ":" +
-                            (minutes < 10 ? "0" : "") +
-                            minutes;
-
-                          horarios.horarioFin = output;
-                        }
-
-                        setFechaEventoForm({
-                          ...fechaEventoForm,
-                          ...horarios,
-                        });
-                      }}
-                    />
-                  </Box>
-
-                  <Divider />
-
-                  <Box>
-                    <Typography variant="body2" fontWeight={300} mb={1.5}>
-                      *Precio para cada pista
-                    </Typography>
-                    <TextField
-                      label="Precio"
-                      type="number"
-                      variant="outlined"
-                      fullWidth
-                      sx={{
-                        ".MuiOutlinedInput-input": {
-                          backgroundColor: "#f9f9f9",
-                          paddingLeft: "10px",
-                        },
-                      }}
-                      onChange={(e) => {
-                        setFechaEventoForm({
-                          ...fechaEventoForm,
-                          precio: e.target.value,
-                        });
-                      }}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <EuroIcon fontSize="small" sx={{ mr: 1 }} />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Box>
-
-                  <Divider />
-
-                  <Button type="submit" variant="contained" color="primary">
-                    AÑADIR EVENTOS
-                  </Button>
-                </Stack>
-              </LocalizationProvider>
-            </Box>
-            <Box
-              mt={3}
-              sx={{
-                backgroundColor: "background.paper",
-                p: "15px",
-                width: "fit-content",
-                borderRadius: 1.5,
-                boxShadow:
-                  "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.005)",
-              }}
-            >
-              <Button
-                variant="outlined"
-                color="primary"
-                startIcon={<ChevronLeftIcon />}
-                sx={{ mr: 2 }}
-                onClick={() => {
-                  router.push(`/admin/pistas/add?step=${Number(step) - 1}`);
-                }}
-              >
-                Anterior
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                disableElevation
-                disabled={!siguienteActivo}
-                endIcon={<ChevronRightIcon />}
-                onClick={() => {
-                  router.push(`/admin/pistas/add?step=${Number(step) + 1}`);
-                }}
-              >
-                Siguiente
-              </Button>
-            </Box>
-          </Grid>
-          <Grid item xs={7}>
-            <Box
-              sx={{
-                padding: "20px",
-                backgroundColor: "background.paper",
-                borderRadius: 1,
-                boxShadow:
-                  "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-              }}
-            >
-              <FullCalendar
-                plugins={[dayGridPlugin, timeGridPlugin]}
-                initialView="timeGridThreeDay"
-                locale={"es"}
-                slotMinTime={
-                  pistaForm.horarioApertura == ""
-                    ? "00:00"
-                    : pistaForm.horarioApertura
-                }
-                allDaySlot={false}
-                buttonText={{
-                  today: "Hoy",
-                  month: "Mes",
-                  week: "Semana",
-                  day: "Día",
-                  list: "Lista",
-                }}
-                slotLabelFormat={{
-                  hour: "numeric",
-                  minute: "2-digit",
-                  omitZeroMinute: false,
-                  meridiem: "short",
-                }}
-                firstDay={1}
-                customButtons={{
-                  addReserva: {
-                    text: "Añadir reserva",
-                    click: function () {
-                      alert("Añadir reserva");
-                    },
-                  },
-                }}
-                headerToolbar={{
-                  left: "timeGridDay,timeGridThreeDay,timeGridWeek",
-                  right: "prev,next",
-                }}
-                views={{
-                  timeGridThreeDay: {
-                    type: "timeGrid",
-                    duration: { days: 3 },
-                    buttonText: "3 días",
-                  },
-                }}
-                events={eventos}
-              />
-            </Box>
-          </Grid>
-        </Grid>
-      </MainLayout>
-    );
-  } else if (step == 3) {
-    return (
-      <MainLayout user={user}>
-        <Stack
-          mt={4}
-          spacing={12}
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          sx={{
-            backgroundColor: "background.paper",
-            p: "15px 20px",
-            borderRadius: 1.5,
-            boxShadow:
-              "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-            borderTop: "3px solid #3454D1",
-          }}
-        >
-          <Box>
-            <Typography variant="h5" fontWeight={600}>
-              Añadir pista
-            </Typography>
-            <Typography noWrap>
-              Tienes un total de {user.pista.length} pistas
-            </Typography>
-          </Box>
-          <Box sx={{ width: "100%" }}>
-            <Stepper sx={{ width: "100%" }} activeStep={step - 1}>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-          </Box>
-        </Stack>
-
-        <Grid container spacing={3} mt={1}>
-          <Grid item xs={5}>
-            <Box>
-              <PistaItem pista={pistaForm} />
-            </Box>
-          </Grid>
-          <Grid item xs={7}>
-            {pistaForm.ubicacionLatitud != "" &&
-            pistaForm.ubicacionLongitud != "" ? (
-              <Box
-                sx={{
-                  padding: "5px",
-                  backgroundColor: "background.paper",
-                  borderRadius: 1,
-                  boxShadow:
-                    "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-                }}
-              >
-                <Map
-                  lat={Number(pistaForm.ubicacionLatitud)}
-                  lng={Number(pistaForm.ubicacionLongitud)}
-                />
-              </Box>
-            ) : (
-              <></>
-            )}
-          </Grid>
-        </Grid>
-
-        <Grid container spacing={3} mt={0}>
-          <Grid item xs={4}>
-            <Stack
-              direction={"row"}
-              alignItems={"center"}
-              justifyContent={"center"}
-              spacing={3}
-              sx={{
-                padding: "20px",
-                backgroundColor: "background.paper",
-                borderRadius: 1,
-                boxShadow:
-                  "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-              }}
-            >
-              <LocalPhoneOutlinedIcon color="primary" />
-              <Typography fontWeight={300}>601361279</Typography>
-            </Stack>
-          </Grid>
-          <Grid item xs={4}>
-            <Stack
-              direction={"row"}
-              alignItems={"center"}
-              justifyContent={"center"}
-              spacing={3}
-              sx={{
-                padding: "20px",
-                backgroundColor: "background.paper",
-                borderRadius: 1,
-                boxShadow:
-                  "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-              }}
-            >
-              <EventOutlinedIcon color="primary" />
-              <Typography fontWeight={300}>
-                {eventos.length} reservas
-              </Typography>
-            </Stack>
-          </Grid>
-          <Grid item xs={4}>
-            <Stack
-              direction={"row"}
-              alignItems={"center"}
-              justifyContent={"center"}
-              spacing={3}
-              sx={{
-                padding: "20px",
-                backgroundColor: "background.paper",
-                borderRadius: 1,
-                boxShadow:
-                  "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-              }}
-            >
-              <AccessTimeOutlinedIcon color="primary" />
-              <Typography fontWeight={300}>
-                {pistaForm.horarioApertura} apertura
-              </Typography>
-            </Stack>
-          </Grid>
-        </Grid>
-
-        <Box
-          mt={3}
-          sx={{
-            backgroundColor: "background.paper",
-            p: "15px",
-            width: "fit-content",
-            borderRadius: 1.5,
-            boxShadow:
-              "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.005)",
-          }}
-        >
-          <Button
-            variant="outlined"
-            color="primary"
-            startIcon={<ChevronLeftIcon />}
-            sx={{ mr: 2 }}
-            onClick={() => {
-              router.push(`/admin/pistas/add?step=${Number(step) - 1}`);
-            }}
-          >
-            Anterior
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            disableElevation
-            disabled={!siguienteActivo}
-            endIcon={<DoneAllOutlinedIcon />}
             onClick={handleCreatePista}
           >
-            CONFIRMAR
+            Crear
           </Button>
         </Box>
       </MainLayout>
     );
   }
+  // } else if (step == 2) {
+  // return (
+  //   <MainLayout user={user}>
+  //     <Stack
+  //       mt={4}
+  //       spacing={12}
+  //       direction="row"
+  //       justifyContent="space-between"
+  //       alignItems="center"
+  //       sx={{
+  //         backgroundColor: "background.paper",
+  //         p: "15px 20px",
+  //         borderRadius: 1.5,
+  //         boxShadow:
+  //           "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+  //         borderTop: "3px solid #3454D1",
+  //       }}
+  //     >
+  //       <Box>
+  //         <Typography variant="h5" fontWeight={600}>
+  //           Añadir pista
+  //         </Typography>
+  //         <Typography noWrap>
+  //           Tienes un total de {user.pista.length} pistas
+  //         </Typography>
+  //       </Box>
+  //       <Box sx={{ width: "100%" }}>
+  //         <Stepper sx={{ width: "100%" }} activeStep={step - 1}>
+  //           {steps.map((label) => (
+  //             <Step key={label}>
+  //               <StepLabel>{label}</StepLabel>
+  //             </Step>
+  //           ))}
+  //         </Stepper>
+  //       </Box>
+  //     </Stack>
+
+  //     <Grid container spacing={3} mt={1}>
+  //       <Grid item xs={5}>
+  //         <Box>
+  //           <PistaItem pista={pistaForm} />
+  //         </Box>
+  //       </Grid>
+  //       <Grid item xs={7}>
+  //         {pistaForm.ubicacionLatitud != "" &&
+  //         pistaForm.ubicacionLongitud != "" ? (
+  //           <Box
+  //             sx={{
+  //               padding: "5px",
+  //               backgroundColor: "background.paper",
+  //               borderRadius: 1,
+  //               boxShadow:
+  //                 "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+  //             }}
+  //           >
+  //             <Map
+  //               lat={Number(pistaForm.ubicacionLatitud)}
+  //               lng={Number(pistaForm.ubicacionLongitud)}
+  //             />
+  //           </Box>
+  //         ) : (
+  //           <></>
+  //         )}
+  //       </Grid>
+  //     </Grid>
+
+  //     <Grid container spacing={3} mt={0}>
+  //       <Grid item xs={4}>
+  //         <Stack
+  //           direction={"row"}
+  //           alignItems={"center"}
+  //           justifyContent={"center"}
+  //           spacing={3}
+  //           sx={{
+  //             padding: "20px",
+  //             backgroundColor: "background.paper",
+  //             borderRadius: 1,
+  //             boxShadow:
+  //               "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+  //           }}
+  //         >
+  //           <LocalPhoneOutlinedIcon color="primary" />
+  //           <Typography fontWeight={300}>601361279</Typography>
+  //         </Stack>
+  //       </Grid>
+  //       <Grid item xs={4}>
+  //         <Stack
+  //           direction={"row"}
+  //           alignItems={"center"}
+  //           justifyContent={"center"}
+  //           spacing={3}
+  //           sx={{
+  //             padding: "20px",
+  //             backgroundColor: "background.paper",
+  //             borderRadius: 1,
+  //             boxShadow:
+  //               "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+  //           }}
+  //         >
+  //           <EventOutlinedIcon color="primary" />
+  //           <Typography fontWeight={300}>{eventos.length} reservas</Typography>
+  //         </Stack>
+  //       </Grid>
+  //       <Grid item xs={4}>
+  //         <Stack
+  //           direction={"row"}
+  //           alignItems={"center"}
+  //           justifyContent={"center"}
+  //           spacing={3}
+  //           sx={{
+  //             padding: "20px",
+  //             backgroundColor: "background.paper",
+  //             borderRadius: 1,
+  //             boxShadow:
+  //               "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+  //           }}
+  //         >
+  //           <AccessTimeOutlinedIcon color="primary" />
+  //           <Typography fontWeight={300}>
+  //             {pistaForm.horarioApertura} apertura
+  //           </Typography>
+  //         </Stack>
+  //       </Grid>
+  //     </Grid>
+
+  //     <Box
+  //       mt={3}
+  //       sx={{
+  //         backgroundColor: "background.paper",
+  //         p: "15px",
+  //         width: "fit-content",
+  //         borderRadius: 1.5,
+  //         boxShadow:
+  //           "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.005)",
+  //       }}
+  //     >
+  //       <Button
+  //         variant="outlined"
+  //         color="primary"
+  //         startIcon={<ChevronLeftIcon />}
+  //         sx={{ mr: 2 }}
+  //         onClick={() => {
+  //           router.push(`/admin/pistas/add?step=${Number(step) - 1}`);
+  //         }}
+  //       >
+  //         Anterior
+  //       </Button>
+  //       <Button
+  //         variant="contained"
+  //         color="primary"
+  //         disableElevation
+  //         disabled={!siguienteActivo}
+  //         endIcon={<DoneAllOutlinedIcon />}
+  //         onClick={handleCreatePista}
+  //       >
+  //         CONFIRMAR
+  //       </Button>
+  //     </Box>
+  //   </MainLayout>
+  //   // <MainLayout user={user}>
+  //   //   <Stack
+  //   //     mt={4}
+  //   //     spacing={12}
+  //   //     direction="row"
+  //   //     justifyContent="space-between"
+  //   //     alignItems="center"
+  //   //     sx={{
+  //   //       backgroundColor: "background.paper",
+  //   //       p: "15px 20px",
+  //   //       borderRadius: 1.5,
+  //   //       boxShadow:
+  //   //         "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+  //   //       borderTop: "3px solid #3454D1",
+  //   //     }}
+  //   //   >
+  //   //     <Box>
+  //   //       <Typography variant="h5" fontWeight={600}>
+  //   //         Añadir pista
+  //   //       </Typography>
+  //   //       <Typography noWrap>
+  //   //         Tienes un total de {user.pista.length} pistas
+  //   //       </Typography>
+  //   //     </Box>
+  //   //     <Box sx={{ width: "100%" }}>
+  //   //       <Stepper sx={{ width: "100%" }} activeStep={step - 1}>
+  //   //         {steps.map((label) => (
+  //   //           <Step key={label}>
+  //   //             <StepLabel>{label}</StepLabel>
+  //   //           </Step>
+  //   //         ))}
+  //   //       </Stepper>
+  //   //     </Box>
+  //   //   </Stack>
+
+  //   //   <Grid container spacing={4} mt={0}>
+  //   //     <Grid item xs={5}>
+  //   //       <Box
+  //   //         component="form"
+  //   //         onSubmit={handleAñadirEvento}
+  //   //         sx={{
+  //   //           padding: "20px",
+  //   //           backgroundColor: "background.paper",
+  //   //           borderRadius: 1,
+  //   //           boxShadow:
+  //   //             "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+  //   //         }}
+  //   //       >
+  //   //         <LocalizationProvider dateAdapter={AdapterDayjs}>
+  //   //           <Stack spacing={2}>
+  //   //             <Box>
+  //   //               <Typography variant="body2" fontWeight={300} mb={1.5}>
+  //   //                 *Añadir una fecha en múltiples días
+  //   //               </Typography>
+  //   //               <DateRangePicker
+  //   //                 calendars={2}
+  //   //                 disablePast={true}
+  //   //                 format="DD/MM"
+  //   //                 localeText={{ start: "Fecha Comienzo", end: "Fecha Fin" }}
+  //   //                 sx={{
+  //   //                   ".MuiOutlinedInput-input": {
+  //   //                     backgroundColor: "#f9f9f9",
+  //   //                   },
+  //   //                 }}
+  //   //                 onChange={(newValue) => {
+  //   //                   let fechas = {
+  //   //                     fechaInicio: "",
+  //   //                     fechaFin: "",
+  //   //                   };
+
+  //   //                   if (newValue[0]) {
+  //   //                     // FORMAT MUST BE YYYY-MM-DD WITH 0 IN FRONT OF SINGLE DIGIT MONTHS AND DAYS
+  //   //                     const date = new Date(newValue[0]);
+  //   //                     const month = date.getMonth() + 1;
+  //   //                     const day = date.getDate();
+  //   //                     const output =
+  //   //                       date.getFullYear() +
+  //   //                       "-" +
+  //   //                       (month < 10 ? "0" : "") +
+  //   //                       month +
+  //   //                       "-" +
+  //   //                       (day < 10 ? "0" : "") +
+  //   //                       day;
+
+  //   //                     fechas.fechaInicio = output;
+  //   //                   }
+
+  //   //                   if (newValue[1]) {
+  //   //                     // FORMAT MUST BE YYYY-MM-DD WITH 0 IN FRONT OF SINGLE DIGIT MONTHS AND DAYS
+  //   //                     const date = new Date(newValue[1]);
+  //   //                     const month = date.getMonth() + 1;
+  //   //                     const day = date.getDate();
+  //   //                     const output =
+  //   //                       date.getFullYear() +
+  //   //                       "-" +
+  //   //                       (month < 10 ? "0" : "") +
+  //   //                       month +
+  //   //                       "-" +
+  //   //                       (day < 10 ? "0" : "") +
+  //   //                       day;
+
+  //   //                     fechas.fechaFin = output;
+  //   //                   }
+
+  //   //                   setFechaEventoForm({
+  //   //                     ...fechaEventoForm,
+  //   //                     ...fechas,
+  //   //                   });
+  //   //                 }}
+  //   //               />
+  //   //             </Box>
+
+  //   //             <Divider />
+
+  //   //             <Box>
+  //   //               <Typography variant="body2" fontWeight={300} mb={1.5}>
+  //   //                 *Añadir un horario en múltiples días
+  //   //               </Typography>
+  //   //               <MultiInputTimeRangeField
+  //   //                 ampm={false}
+  //   //                 format="HH:mm"
+  //   //                 slotProps={{
+  //   //                   textField: ({ position }) => ({
+  //   //                     label:
+  //   //                       position === "start"
+  //   //                         ? "Horario comienzo"
+  //   //                         : "Horario fin",
+  //   //                   }),
+  //   //                 }}
+  //   //                 sx={{
+  //   //                   ".MuiOutlinedInput-input": {
+  //   //                     backgroundColor: "#f9f9f9",
+  //   //                   },
+  //   //                 }}
+  //   //                 onChange={async (newValue) => {
+  //   //                   let horarios = {
+  //   //                     horarioInicio: "",
+  //   //                     horarioFin: "",
+  //   //                   };
+
+  //   //                   if (newValue[0]) {
+  //   //                     // FORMAT MUST BE HH:MM WITH 0 IN FRONT OF SINGLE DIGIT HOURS AND MINUTES
+  //   //                     const date = new Date(newValue[0]);
+  //   //                     const hours = date.getHours();
+  //   //                     const minutes = date.getMinutes();
+  //   //                     const output =
+  //   //                       (hours < 10 ? "0" : "") +
+  //   //                       hours +
+  //   //                       ":" +
+  //   //                       (minutes < 10 ? "0" : "") +
+  //   //                       minutes;
+
+  //   //                     horarios.horarioInicio = output;
+  //   //                   }
+
+  //   //                   if (newValue[1]) {
+  //   //                     // FORMAT MUST BE HH:MM WITH 0 IN FRONT OF SINGLE DIGIT HOURS AND MINUTES
+  //   //                     const date = new Date(newValue[1]);
+  //   //                     const hours = date.getHours();
+  //   //                     const minutes = date.getMinutes();
+  //   //                     const output =
+  //   //                       (hours < 10 ? "0" : "") +
+  //   //                       hours +
+  //   //                       ":" +
+  //   //                       (minutes < 10 ? "0" : "") +
+  //   //                       minutes;
+
+  //   //                     horarios.horarioFin = output;
+  //   //                   }
+
+  //   //                   setFechaEventoForm({
+  //   //                     ...fechaEventoForm,
+  //   //                     ...horarios,
+  //   //                   });
+  //   //                 }}
+  //   //               />
+  //   //             </Box>
+
+  //   //             <Divider />
+
+  //   //             <Box>
+  //   //               <Typography variant="body2" fontWeight={300} mb={1.5}>
+  //   //                 *Precio para cada pista
+  //   //               </Typography>
+  //   //               <TextField
+  //   //                 label="Precio"
+  //   //                 type="number"
+  //   //                 variant="outlined"
+  //   //                 fullWidth
+  //   //                 sx={{
+  //   //                   ".MuiOutlinedInput-input": {
+  //   //                     backgroundColor: "#f9f9f9",
+  //   //                     paddingLeft: "10px",
+  //   //                   },
+  //   //                 }}
+  //   //                 onChange={(e) => {
+  //   //                   setFechaEventoForm({
+  //   //                     ...fechaEventoForm,
+  //   //                     precio: e.target.value,
+  //   //                   });
+  //   //                 }}
+  //   //                 InputProps={{
+  //   //                   startAdornment: (
+  //   //                     <InputAdornment position="start">
+  //   //                       <EuroIcon fontSize="small" sx={{ mr: 1 }} />
+  //   //                     </InputAdornment>
+  //   //                   ),
+  //   //                 }}
+  //   //               />
+  //   //             </Box>
+
+  //   //             <Divider />
+
+  //   //             <Button type="submit" variant="contained" color="primary">
+  //   //               AÑADIR EVENTOS
+  //   //             </Button>
+  //   //           </Stack>
+  //   //         </LocalizationProvider>
+  //   //       </Box>
+  //   //       <Box
+  //   //         mt={3}
+  //   //         sx={{
+  //   //           backgroundColor: "background.paper",
+  //   //           p: "15px",
+  //   //           width: "fit-content",
+  //   //           borderRadius: 1.5,
+  //   //           boxShadow:
+  //   //             "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.005)",
+  //   //         }}
+  //   //       >
+  //   //         <Button
+  //   //           variant="outlined"
+  //   //           color="primary"
+  //   //           startIcon={<ChevronLeftIcon />}
+  //   //           sx={{ mr: 2 }}
+  //   //           onClick={() => {
+  //   //             router.push(`/admin/pistas/add?step=${Number(step) - 1}`);
+  //   //           }}
+  //   //         >
+  //   //           Anterior
+  //   //         </Button>
+  //   //         <Button
+  //   //           variant="contained"
+  //   //           color="primary"
+  //   //           disableElevation
+  //   //           disabled={!siguienteActivo}
+  //   //           endIcon={<ChevronRightIcon />}
+  //   //           onClick={() => {
+  //   //             router.push(`/admin/pistas/add?step=${Number(step) + 1}`);
+  //   //           }}
+  //   //         >
+  //   //           Siguiente
+  //   //         </Button>
+  //   //       </Box>
+  //   //     </Grid>
+  //   //     <Grid item xs={7}>
+  //   //       <Box
+  //   //         sx={{
+  //   //           padding: "20px",
+  //   //           backgroundColor: "background.paper",
+  //   //           borderRadius: 1,
+  //   //           boxShadow:
+  //   //             "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+  //   //         }}
+  //   //       >
+  //   //         <FullCalendar
+  //   //           plugins={[dayGridPlugin, timeGridPlugin]}
+  //   //           initialView="timeGridThreeDay"
+  //   //           locale={"es"}
+  //   //           slotMinTime={
+  //   //             pistaForm.horarioApertura == ""
+  //   //               ? "00:00"
+  //   //               : pistaForm.horarioApertura
+  //   //           }
+  //   //           allDaySlot={false}
+  //   //           buttonText={{
+  //   //             today: "Hoy",
+  //   //             month: "Mes",
+  //   //             week: "Semana",
+  //   //             day: "Día",
+  //   //             list: "Lista",
+  //   //           }}
+  //   //           slotLabelFormat={{
+  //   //             hour: "numeric",
+  //   //             minute: "2-digit",
+  //   //             omitZeroMinute: false,
+  //   //             meridiem: "short",
+  //   //           }}
+  //   //           firstDay={1}
+  //   //           customButtons={{
+  //   //             addReserva: {
+  //   //               text: "Añadir reserva",
+  //   //               click: function () {
+  //   //                 alert("Añadir reserva");
+  //   //               },
+  //   //             },
+  //   //           }}
+  //   //           headerToolbar={{
+  //   //             left: "timeGridDay,timeGridThreeDay,timeGridWeek",
+  //   //             right: "prev,next",
+  //   //           }}
+  //   //           views={{
+  //   //             timeGridThreeDay: {
+  //   //               type: "timeGrid",
+  //   //               duration: { days: 3 },
+  //   //               buttonText: "3 días",
+  //   //             },
+  //   //           }}
+  //   //           events={eventos}
+  //   //         />
+  //   //       </Box>
+  //   //     </Grid>
+  //   //   </Grid>
+  //   // </MainLayout>
+  // );
+  // } else if (step == 3) {
+  //   return (
+  //     <MainLayout user={user}>
+  //       <Stack
+  //         mt={4}
+  //         spacing={12}
+  //         direction="row"
+  //         justifyContent="space-between"
+  //         alignItems="center"
+  //         sx={{
+  //           backgroundColor: "background.paper",
+  //           p: "15px 20px",
+  //           borderRadius: 1.5,
+  //           boxShadow:
+  //             "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+  //           borderTop: "3px solid #3454D1",
+  //         }}
+  //       >
+  //         <Box>
+  //           <Typography variant="h5" fontWeight={600}>
+  //             Añadir pista
+  //           </Typography>
+  //           <Typography noWrap>
+  //             Tienes un total de {user.pista.length} pistas
+  //           </Typography>
+  //         </Box>
+  //         <Box sx={{ width: "100%" }}>
+  //           <Stepper sx={{ width: "100%" }} activeStep={step - 1}>
+  //             {steps.map((label) => (
+  //               <Step key={label}>
+  //                 <StepLabel>{label}</StepLabel>
+  //               </Step>
+  //             ))}
+  //           </Stepper>
+  //         </Box>
+  //       </Stack>
+
+  //       <Grid container spacing={3} mt={1}>
+  //         <Grid item xs={5}>
+  //           <Box>
+  //             <PistaItem pista={pistaForm} />
+  //           </Box>
+  //         </Grid>
+  //         <Grid item xs={7}>
+  //           {pistaForm.ubicacionLatitud != "" &&
+  //           pistaForm.ubicacionLongitud != "" ? (
+  //             <Box
+  //               sx={{
+  //                 padding: "5px",
+  //                 backgroundColor: "background.paper",
+  //                 borderRadius: 1,
+  //                 boxShadow:
+  //                   "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+  //               }}
+  //             >
+  //               <Map
+  //                 lat={Number(pistaForm.ubicacionLatitud)}
+  //                 lng={Number(pistaForm.ubicacionLongitud)}
+  //               />
+  //             </Box>
+  //           ) : (
+  //             <></>
+  //           )}
+  //         </Grid>
+  //       </Grid>
+
+  //       <Grid container spacing={3} mt={0}>
+  //         <Grid item xs={4}>
+  //           <Stack
+  //             direction={"row"}
+  //             alignItems={"center"}
+  //             justifyContent={"center"}
+  //             spacing={3}
+  //             sx={{
+  //               padding: "20px",
+  //               backgroundColor: "background.paper",
+  //               borderRadius: 1,
+  //               boxShadow:
+  //                 "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+  //             }}
+  //           >
+  //             <LocalPhoneOutlinedIcon color="primary" />
+  //             <Typography fontWeight={300}>601361279</Typography>
+  //           </Stack>
+  //         </Grid>
+  //         <Grid item xs={4}>
+  //           <Stack
+  //             direction={"row"}
+  //             alignItems={"center"}
+  //             justifyContent={"center"}
+  //             spacing={3}
+  //             sx={{
+  //               padding: "20px",
+  //               backgroundColor: "background.paper",
+  //               borderRadius: 1,
+  //               boxShadow:
+  //                 "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+  //             }}
+  //           >
+  //             <EventOutlinedIcon color="primary" />
+  //             <Typography fontWeight={300}>
+  //               {eventos.length} reservas
+  //             </Typography>
+  //           </Stack>
+  //         </Grid>
+  //         <Grid item xs={4}>
+  //           <Stack
+  //             direction={"row"}
+  //             alignItems={"center"}
+  //             justifyContent={"center"}
+  //             spacing={3}
+  //             sx={{
+  //               padding: "20px",
+  //               backgroundColor: "background.paper",
+  //               borderRadius: 1,
+  //               boxShadow:
+  //                 "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+  //             }}
+  //           >
+  //             <AccessTimeOutlinedIcon color="primary" />
+  //             <Typography fontWeight={300}>
+  //               {pistaForm.horarioApertura} apertura
+  //             </Typography>
+  //           </Stack>
+  //         </Grid>
+  //       </Grid>
+
+  //       <Box
+  //         mt={3}
+  //         sx={{
+  //           backgroundColor: "background.paper",
+  //           p: "15px",
+  //           width: "fit-content",
+  //           borderRadius: 1.5,
+  //           boxShadow:
+  //             "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.005)",
+  //         }}
+  //       >
+  //         <Button
+  //           variant="outlined"
+  //           color="primary"
+  //           startIcon={<ChevronLeftIcon />}
+  //           sx={{ mr: 2 }}
+  //           onClick={() => {
+  //             router.push(`/admin/pistas/add?step=${Number(step) - 1}`);
+  //           }}
+  //         >
+  //           Anterior
+  //         </Button>
+  //         <Button
+  //           variant="contained"
+  //           color="primary"
+  //           disableElevation
+  //           disabled={!siguienteActivo}
+  //           endIcon={<DoneAllOutlinedIcon />}
+  //           onClick={handleCreatePista}
+  //         >
+  //           CONFIRMAR
+  //         </Button>
+  //       </Box>
+  //     </MainLayout>
+  //   );
+  // }
 };
 
 export const getServerSideProps = async (ctx) => {
@@ -995,7 +1140,12 @@ export const getServerSideProps = async (ctx) => {
     },
 
     include: {
-      pista: true,
+      pista: {
+        // SOLO LAS QUE ESTEN ACTIVAS
+        where: {
+          activa: true,
+        },
+      },
     },
   });
 

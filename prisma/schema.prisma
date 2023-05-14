@@ -66,7 +66,8 @@ model Pista {
     id                String       @id @default(cuid())
     nombre            String
     descripcion       String
-    imagen            String
+    // ARRAY DE IMAGENES
+    imagenes          String[]
     ubicacionLatitud  String
     ubicacionLongitud String
     telefono          String

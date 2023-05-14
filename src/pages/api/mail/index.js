@@ -7,7 +7,7 @@ export default function handler(req, res) {
       break;
 
     default:
-      res.status(405).end(`Method ${req.method} Not Allowed`);
+      res.status(405).end(`Método ${req.method} no permitido`);
       break;
   }
 }
@@ -102,19 +102,3 @@ const transporter = nodemailer.createTransport({
     pass: "dqmgdbwuatgsjdok",
   },
 });
-
-const handlePostPista = async (req, res) => {
-  transporter.sendMail(message, (err, info) => {
-    if (err) {
-      console.log(err);
-
-      res.status(404).json({
-        error: `Connection refused at ${err.address}`,
-      });
-    } else {
-      res.status(250).json({
-        success: `Message delivered to ${info.accepted}`,
-      });
-    }
-  });
-};

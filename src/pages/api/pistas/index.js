@@ -6,6 +6,14 @@ export default function handler(req, res) {
       handlePostPista(req, res);
       break;
 
+    case "PUT":
+      handlePutPista(req, res);
+      break;
+
+    case "DELETE":
+      handleDeletePista(req, res);
+      break;
+
     default:
       res.status(405).end(`Method ${req.method} Not Allowed`);
       break;
@@ -16,26 +24,28 @@ const handlePostPista = async (req, res) => {
   const {
     nombre,
     descripcion,
-    imagen,
+    imagenes,
     ubicacionLatitud,
     ubicacionLongitud,
     telefono,
     usuarioId,
-    eventos,
+    // eventos,
     horarioApertura,
   } = req.body;
+
+  console.log(req.body);
 
   if (
     !nombre ||
     !descripcion ||
-    !imagen ||
+    !imagenes ||
     !ubicacionLatitud ||
     !ubicacionLongitud ||
     !telefono ||
-    !usuarioId ||
-    !eventos
+    !usuarioId
+    // !eventos
   ) {
-    res.status(400).json({ error: "Missing required fields" });
+    res.status(400).json({ error: "Faltan campos por añadir" });
     return;
   }
 
@@ -44,7 +54,7 @@ const handlePostPista = async (req, res) => {
       data: {
         nombre,
         descripcion,
-        imagen,
+        imagenes,
         ubicacionLatitud,
         ubicacionLongitud,
         telefono,
@@ -53,23 +63,23 @@ const handlePostPista = async (req, res) => {
       },
     });
 
-    eventos.forEach(async (evento) => {
-      await prisma.evento.create({
-        data: {
-          nombre: evento.nombre,
-          descripcion: evento.descripcion,
-          precio: evento.precio,
-          descripcion: evento.descripcion,
-          fechaInicio: evento.fechaInicio,
-          fechaFin: evento.fechaFin,
-          pista: {
-            connect: {
-              id: pista.id,
-            },
-          },
-        },
-      });
-    });
+    // eventos.forEach(async (evento) => {
+    //   await prisma.evento.create({
+    //     data: {
+    //       nombre: evento.nombre,
+    //       descripcion: evento.descripcion,
+    //       precio: evento.precio,
+    //       descripcion: evento.descripcion,
+    //       fechaInicio: evento.fechaInicio,
+    //       fechaFin: evento.fechaFin,
+    //       pista: {
+    //         connect: {
+    //           id: pista.id,
+    //         },
+    //       },
+    //     },
+    //   });
+    // });
 
     await prisma.registro.create({
       data: {
@@ -87,5 +97,148 @@ const handlePostPista = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+const handlePutPista = async (req, res) => {
+  const {
+    pistaId,
+    imagen,
+    imageUrl,
+    tipo,
+    nombre,
+    telefono,
+    ubicacionLatitud,
+    ubicacionLongitud,
+    horarioApertura,
+  } = req.body;
+
+  if (tipo == "EliminarImagen") {
+    if (imageUrl && pistaId) {
+      console.log("entro");
+
+      try {
+        const { imagenes } = await prisma.pista.findUnique({
+          where: {
+            id: pistaId,
+          },
+          select: {
+            imagenes: true,
+          },
+        });
+
+        const pista = await prisma.pista.update({
+          where: {
+            id: pistaId,
+          },
+          data: {
+            imagenes: {
+              set: imagenes.filter((img) => img !== imageUrl),
+            },
+          },
+        });
+
+        await prisma.registro.create({
+          data: {
+            usuarioId: pista.usuarioId,
+            fecha: new Date(),
+            accion: `Se ha eliminado una imagen a la pista ${pista.nombre}`,
+            descripcion: `Se ha eliminado una imagen a la pista ${pista.nombre} con el id ${pista.id} y el usuarioId ${pista.usuarioId}`,
+          },
+        });
+
+        return res.status(200).json({
+          message: "¡Imagen eliminada correctamente!",
+          pista,
+        });
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    }
+  } else if (tipo == "AñadirImagen") {
+    if (!pistaId || !imagen) {
+      res.status(400).json({ error: "Faltan campos por añadir" });
+      return;
+    }
+
+    try {
+      const pista = await prisma.pista.update({
+        where: {
+          id: pistaId,
+        },
+        data: {
+          imagenes: {
+            push: imagen,
+          },
+        },
+      });
+
+      await prisma.registro.create({
+        data: {
+          usuarioId: pista.usuarioId,
+          fecha: new Date(),
+          accion: `Se ha añadido una imagen a la pista ${pista.nombre}`,
+          descripcion: `Se ha añadido una imagen a la pista ${pista.nombre} con el id ${pista.id} y el usuarioId ${pista.usuarioId}`,
+        },
+      });
+
+      res.status(200).json({
+        message: "¡Imagen añadida correctamente!",
+        pista,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Error en el servidor. Prueba más tarde" });
+    }
+  } else if (tipo == "ActualizarInformacion") {
+    console.log(req.body);
+
+    if (
+      !pistaId ||
+      !nombre ||
+      !telefono ||
+      !ubicacionLatitud ||
+      !ubicacionLongitud ||
+      !horarioApertura
+    ) {
+      console.log("aqui");
+      res.status(400).json({ error: "Faltan campos por añadir" });
+      return;
+    }
+
+    try {
+      const pista = await prisma.pista.update({
+        where: {
+          id: pistaId,
+        },
+        data: {
+          nombre,
+          telefono,
+          ubicacionLatitud,
+          ubicacionLongitud,
+          horarioApertura,
+        },
+      });
+
+      await prisma.registro.create({
+        data: {
+          usuarioId: pista.usuarioId,
+          fecha: new Date(),
+          accion: `Se ha actualizado la información de la pista ${pista.nombre}`,
+          descripcion: `Se ha actualizado la información de la pista ${pista.nombre} con el id ${pista.id} y el usuarioId ${pista.usuarioId}`,
+        },
+      });
+
+      res.status(200).json({
+        message: "¡Información actualizada correctamente!",
+        pista,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Error en el servidor. Prueba más tarde" });
+    }
+  } else {
+    res.status(400).json({ error: "Faltan campos por añadir" });
   }
 };

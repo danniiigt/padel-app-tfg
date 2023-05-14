@@ -29,7 +29,7 @@ export const PistaItem = ({ pista }) => {
         height: 235,
       }}
     >
-      {pista.imagen && (
+      {pista.imagenes?.length > 0 && (
         <CardActionArea
           onClick={handleRedirect}
           sx={{
@@ -54,7 +54,7 @@ export const PistaItem = ({ pista }) => {
             },
           }}
         >
-          <img src={pista.imagen} alt="Imagen Pista" />
+          <img src={pista.imagenes[0]} alt="Imagen Pista" />
         </CardActionArea>
       )}
 

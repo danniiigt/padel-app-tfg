@@ -69,7 +69,12 @@ const PistasPage = ({ user, pistas, eventos, reservas }) => {
   });
 
   const getEventosPorPistaLength = () => {
+    console.log(eventosPorPista);
     return eventosPorPista.map((evento) => evento.length);
+  };
+
+  const getPistasNombres = () => {
+    return pistas.map((pista) => pista.nombre);
   };
 
   const breadcrumbsItems = [
@@ -184,16 +189,12 @@ const PistasPage = ({ user, pistas, eventos, reservas }) => {
               <Box sx={{ maxWidth: 150 }}>
                 <Doughnut
                   data={{
-                    labels: [
-                      "Reservas Pista 1",
-                      "Reservas Pista 2",
-                      "Reservas Pista 3",
-                    ],
+                    labels: getPistasNombres(),
                     datasets: [
                       {
-                        label: "Reservas de esta semana",
+                        label: "Eventos totales",
                         data: getEventosPorPistaLength(),
-                        backgroundColor: ["#1f1f1f", "#FFC914", "#3454D1"],
+                        backgroundColor: ["#1f1f1f", "#3454D1"],
                       },
                     ],
                   }}

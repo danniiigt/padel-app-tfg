@@ -47,8 +47,6 @@ const LoginPage = () => {
         setEmailError(true);
         setPasswordError(true);
       }
-
-      console.log(res);
     } catch (error) {}
   };
 

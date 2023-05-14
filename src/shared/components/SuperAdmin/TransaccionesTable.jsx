@@ -82,7 +82,6 @@ export const TransaccionesTable = ({
       });
 
       const data = await res.json();
-      console.log(data);
 
       if (res.status === 200) {
         toast.success("Transaccion completada");
@@ -90,10 +89,6 @@ export const TransaccionesTable = ({
       }
     }
   };
-
-  console.log(
-    rows.filter((row) => row.estado.toLowerCase() == "pendiente").length
-  );
 
   return (
     <>

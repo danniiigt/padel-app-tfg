@@ -220,7 +220,6 @@ const DepositarPage = ({ user }) => {
             onApprove={function (data, actions) {
               return actions.order.capture().then(function (details) {
                 handleDepositPaypal(details);
-                console.log(details);
               });
             }}
           />
