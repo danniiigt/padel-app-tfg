@@ -37,6 +37,8 @@ import Link from "next/link";
 const PistaPage = ({ user: userProps, pista: pistaProps }) => {
   const [user, setUser] = useState(JSON.parse(userProps));
   const [pista, setPista] = useState(JSON.parse(pistaProps));
+
+  console.log(pista);
   const [precioMinimo, setPrecioMinimo] = useState(0);
   const [pistaSeleccionada, setPistaSeleccionada] = useState(null);
   const bannerHeight = 240;
