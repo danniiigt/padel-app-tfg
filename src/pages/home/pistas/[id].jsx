@@ -112,6 +112,24 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
 
   useEffect(() => {
     document.title = `${pista.nombre} - Padel App`;
+
+    let precioMinimo = 0;
+    pista.evento?.forEach((evento) => {
+      if (precioMinimo == 0) {
+        precioMinimo = evento.precio;
+      } else if (evento.precio < precioMinimo) {
+        precioMinimo = evento.precio;
+      }
+    });
+
+    pista.evento?.forEach((evento) => {
+      evento.start = new Date(evento.fechaInicio);
+      evento.end = new Date(evento.fechaFin);
+      evento.title = evento.nombre + " - " + evento.precio + "€";
+      //bg color
+      evento.backgroundColor = evento.ocupada ? "#D10000" : "#3454D1";
+    });
+    setPrecioMinimo(precioMinimo);
   }, []);
 
   return (
@@ -287,47 +305,49 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
                     backgroundColor: "#fafafa",
                   }}
                 >
-                  <FullCalendar
-                    plugins={[dayGridPlugin, timeGridPlugin]}
-                    initialView="timeGridWeek"
-                    locale={"es"}
-                    height={500}
-                    slotMinTime={pista.horarioApertura}
-                    allDaySlot={false}
-                    buttonText={{
-                      today: "Hoy",
-                      month: "Mes",
-                      week: "Semana",
-                      day: "Día",
-                      list: "Lista",
-                    }}
-                    slotLabelFormat={{
-                      hour: "numeric",
-                      minute: "2-digit",
-                      omitZeroMinute: false,
-                      meridiem: "short",
-                    }}
-                    firstDay={1}
-                    headerToolbar={{
-                      left: "timeGridDay,timeGridThreeDay,timeGridWeek",
-                      right: "prev,next",
-                    }}
-                    views={{
-                      timeGridThreeDay: {
-                        type: "timeGrid",
-                        duration: { days: 3 },
-                        buttonText: "3 días",
-                      },
-                    }}
-                    events={pista.evento}
-                    // ON EVENT CLICK
-                    eventClick={(info) => {
-                      setPistaSeleccionada({
-                        ...info.event._def.extendedProps,
-                        eventoId: info.event._def.publicId,
-                      });
-                    }}
-                  />
+                  {pista.evento && pista.evento[0].start && (
+                    <FullCalendar
+                      plugins={[dayGridPlugin, timeGridPlugin]}
+                      initialView="timeGridWeek"
+                      locale={"es"}
+                      height={500}
+                      slotMinTime={pista.horarioApertura}
+                      allDaySlot={false}
+                      buttonText={{
+                        today: "Hoy",
+                        month: "Mes",
+                        week: "Semana",
+                        day: "Día",
+                        list: "Lista",
+                      }}
+                      slotLabelFormat={{
+                        hour: "numeric",
+                        minute: "2-digit",
+                        omitZeroMinute: false,
+                        meridiem: "short",
+                      }}
+                      firstDay={1}
+                      headerToolbar={{
+                        left: "timeGridDay,timeGridThreeDay,timeGridWeek",
+                        right: "prev,next",
+                      }}
+                      views={{
+                        timeGridThreeDay: {
+                          type: "timeGrid",
+                          duration: { days: 3 },
+                          buttonText: "3 días",
+                        },
+                      }}
+                      events={pista?.evento}
+                      // ON EVENT CLICK
+                      eventClick={(info) => {
+                        setPistaSeleccionada({
+                          ...info.event._def.extendedProps,
+                          eventoId: info.event._def.publicId,
+                        });
+                      }}
+                    />
+                  )}
                 </Box>
               </AccordionDetails>
             </Accordion>
