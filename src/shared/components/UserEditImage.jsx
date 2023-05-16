@@ -21,7 +21,6 @@ export const UserEditImage = ({ user: userProps }) => {
     );
 
     const data = await res.json();
-    console.log(data);
 
     const resUsuario = await fetch("/api/user", {
       method: "PUT",

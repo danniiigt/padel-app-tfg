@@ -5,8 +5,6 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { UserEditCard } from "@/shared/components/UserEditCard";
 import { Box, Stack, Tab, Tabs, Typography } from "@mui/material";
 import { UserBankEditCard } from "@/shared/components/UserBankEditCard";
-import ContactSupportIcon from "@mui/icons-material/ContactSupport";
-import Link from "next/link";
 import prisma from "../../../lib/prisma";
 import { UserEditImage } from "@/shared/components/UserEditImage";
 
@@ -54,8 +52,6 @@ const PerfilPage = ({ user: userProps }) => {
   const [user, setUser] = useState(JSON.parse(userProps));
   const [value, setValue] = useState(0);
   const [esAdministrador, setEsAdministrador] = useState(user.role === "ADMIN");
-
-  console.log(user.image);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

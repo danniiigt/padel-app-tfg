@@ -17,15 +17,18 @@ import { useRouter } from "next/router";
 import { DashboardDepositos } from "@/shared/components/DashboardDepositos";
 import { DashboardRetiradas } from "@/shared/components/DashboardRetiradas";
 import prisma from "../../../lib/prisma";
+import { DashboardBancoReservas } from "@/shared/components/DashboardBancoReservas";
 
 const BancoPage = ({
   user,
   transaccionesDepositos,
   transaccionesRetiradas,
+  transaccionesReservas,
 }) => {
   user = JSON.parse(user);
   transaccionesDepositos = JSON.parse(transaccionesDepositos);
   transaccionesRetiradas = JSON.parse(transaccionesRetiradas);
+  transaccionesReservas = JSON.parse(transaccionesReservas);
 
   const esAdmin = user.role.toLowerCase() == "admin";
 
@@ -137,7 +140,7 @@ const BancoPage = ({
       </Grid>
 
       <Grid container mt={1} spacing={3}>
-        <Grid item xs={esAdmin ? 6 : 12}>
+        <Grid item xs={6}>
           <DashboardDepositos depositos={transaccionesDepositos} />
         </Grid>
         {esAdmin && (
@@ -145,6 +148,10 @@ const BancoPage = ({
             <DashboardRetiradas retiradas={transaccionesRetiradas} />
           </Grid>
         )}
+
+        <Grid item xs={esAdmin ? 12 : 6}>
+          <DashboardBancoReservas reservas={transaccionesReservas} />
+        </Grid>
       </Grid>
     </MainLayout>
   );
@@ -184,7 +191,20 @@ export const getServerSideProps = async (ctx) => {
   const transaccionesRetiradas = await prisma.transaccion.findMany({
     where: {
       usuarioId: user.id,
-      tipo: "Retiro",
+      tipo: "Retirada",
+    },
+
+    orderBy: {
+      fecha: "desc",
+    },
+  });
+
+  const transaccionesReservas = await prisma.transaccion.findMany({
+    where: {
+      usuarioId: user.id,
+      tipo: {
+        in: ["Pago de reserva", "Reserva de pista"],
+      },
     },
 
     orderBy: {
@@ -201,6 +221,7 @@ export const getServerSideProps = async (ctx) => {
       user: JSON.stringify(user),
       transaccionesDepositos: JSON.stringify(transaccionesDepositos),
       transaccionesRetiradas: JSON.stringify(transaccionesRetiradas),
+      transaccionesReservas: JSON.stringify(transaccionesReservas),
     },
   };
 };

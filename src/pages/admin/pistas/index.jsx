@@ -69,7 +69,6 @@ const PistasPage = ({ user, pistas, eventos, reservas }) => {
   });
 
   const getEventosPorPistaLength = () => {
-    console.log(eventosPorPista);
     return eventosPorPista.map((evento) => evento.length);
   };
 

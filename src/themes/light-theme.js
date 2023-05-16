@@ -57,5 +57,16 @@ export const lightTheme = createTheme({
         },
       },
     },
+
+    MuiAccordion: {
+      styleOverrides: {
+        root: {
+          "&.Mui-expanded": {
+            margin: 0,
+            borderTop: "1px solid #ddd",
+          },
+        },
+      },
+    },
   },
 });

@@ -161,7 +161,6 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
     );
 
     const data = await res.json();
-    console.log(data);
 
     const resPistas = await fetch("/api/pistas", {
       method: "PUT",
@@ -291,7 +290,7 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
       <Grid container rowSpacing={1} mt={1} mb={3} columnSpacing={2}>
         <Grid item xs={12}>
           <Accordion
-            expanded={true}
+            defaultExpanded={true}
             disableGutters
             elevation={0}
             sx={{
@@ -489,7 +488,7 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
 
         <Grid item xs={6}>
           <Accordion
-            expanded={true}
+            defaultExpanded={true}
             elevation={0}
             sx={{
               mt: 2,
@@ -579,7 +578,7 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
         </Grid>
         <Grid item xs={6}>
           <Accordion
-            expanded={true}
+            defaultExpanded={true}
             elevation={0}
             sx={{
               mt: 2,
@@ -679,7 +678,7 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
 
         <Grid item xs={12}>
           <Accordion
-            expanded={true}
+            defaultExpanded={true}
             elevation={0}
             sx={{
               mt: 2,
