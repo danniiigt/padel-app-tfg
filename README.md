@@ -6,7 +6,7 @@
 
 - [Demo](#demo)
 - [Acerca del Proyecto](#acerca-del-proyecto-)
-- [Proyectos Implicados](#proyectos-implicados-)
+- [Roles de usuario](#roles-de-usuario-)
 - [Tecnologías Usadas](#tecnologías-usadas-%EF%B8%8F--%EF%B8%8F)
 - [Setup / Instalación](#setup--instalación-)
 - [Status](#status-)
