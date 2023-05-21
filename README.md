@@ -1,38 +1,69 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Padel App
 
-## Getting Started
+🟩🟩🟩🟩🟩🟩🟩⬛⬛⬛ 70% Completado
 
-First, run the development server:
+## Tabla de contenidos:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+- [Demo](#demo)
+- [Acerca del Proyecto](#acerca-del-proyecto-)
+- [Proyectos Implicados](#proyectos-implicados-)
+- [Tecnologías Usadas](#tecnologías-usadas-%EF%B8%8F--%EF%B8%8F)
+- [Setup / Instalación](#setup--instalación-)
+- [Status](#status-)
+- [Imágenes](#imágenes)
+- [Licencia](#licencia-%EF%B8%8F)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Demo
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+Puedes ver una demo del proyecto desplegado en Vercel [aqui](https://padel-app-two.vercel.app/)
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## Acerca del Proyecto 📚
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+El proyecto consiste en una aplicación completa de reserva de pistas de pádel. Un tipo de usuarios crean pistas, con sus horarios y precios determinados y otros usuarios pueden reservar estas pistas.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+El objetivo principal es eliminar a la persona intermediaria que se encarga de atender a los clientes, reservar las pistas... etc y automatizar el proceso.
 
-## Learn More
+## Roles de usuario 🔗
 
-To learn more about Next.js, take a look at the following resources:
+`USER` - La funcionalidad principal de este usuario es poder reservar las pistas que haya disponibles. También puede: Hacer depósitos de fondos / Editar el perfil / Escribir reseñas / Cancelar reservas de pistas / Enviar mensajes de soporte (funcionalidad no implementada todavía)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`ADMIN` - La funcionalidad principal de este usuario es poder crear las pistas que los usuarios con rol `USER` podrán reservar. También puede: Hacer depósitos y retiros / Editar el horario de apertura de las pistas / Añadir y eliminar horarios de reserva de las pisas / Hacer depósitos y retiros de fondos / Editar el perfil / Enviar mensajes de soporte (funcionalidad no implementada todavía)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+`SUPERADMIN` - La funcionalidad principal de este usuario es poder editar/borrar y mantener el orden de la aplicación. Por tanto, puede: Editar usuarios y su rol o eliminarlos / Eliminar Pistas / Ver todas las transacciónes y aprobar o denegar los retiros / Responder mensajes de soporte (funcionalidad no implementada todavía)
 
-## Deploy on Vercel
+## Tecnologías Usadas ☕️ 🐍 ⚛️:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`Front-end`: React.js, Next.js, Hooks, Context, Material UI, Animate.css, FullCalendar, Google Maps, Chart.js... entre otras.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+`Back-end`: Next.js, NextAuth, Node.js, PostgresSQL, Prisma.js, PaypalApi, NodeMailer... entre otras.
+
+## Setup / Instalación: 💻
+
+1. `npm install` o `yarn install` - Instala las dependencias del proyecto
+2. `npm run dev` o `yarn dev` - Abrirá un navegador con el proyecto
+
+## Status: 📶
+
+El proyecto ya es funcional, los usuarios pueden reservar pistas, ingresar dinero, retirar dinero, crear pistas... etc.
+
+Faltan funcionalidades por añadir como serían: Sistema de torneos, Sistema de ranking de nivel de jugador, Recompensas...
+
+## Imágenes
+
+Se incluyen imágenes de las vistas de los 3 tipos de roles.
+
+![Imagen 1](https://i.imgur.com/QlC5hLN.png)
+![Imagen 2](https://i.imgur.com/aJPB3U5.png)
+![Imagen 3](https://i.imgur.com/DaJspLw.png)
+![Imagen 4](https://i.imgur.com/FLY23v9.png)
+![Imagen 5](https://i.imgur.com/cw8MZCO.png)
+![Imagen 6](https://i.imgur.com/hHuyFzM.png)
+![Imagen 7](https://i.imgur.com/vcpBkZx.png)
+![Imagen 8](https://i.imgur.com/1JGEIKN.png)
+![Imagen 9](https://i.imgur.com/4PUohyT.png)
+![Imagen 10](https://i.imgur.com/RCmXDMI.png)
+![Imagen 11](https://i.imgur.com/AR1kqcB.png)
+
+## Licencia: ©️
+
+Licencia MIT [@danniiigt](https://github.com/danniiigt)
