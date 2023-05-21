@@ -318,7 +318,7 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
                   readOnly
                 />
                 <Typography variant="body2">
-                  ({pista.valoracion.length})
+                  ({pista?.valoracion?.length || 0})
                 </Typography>
               </Stack>
             </Stack>

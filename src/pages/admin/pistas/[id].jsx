@@ -267,14 +267,14 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
           divider={<Divider orientation="vertical" flexItem />}
         >
           <Typography variant="body1">
-            {pista.reserva.length} reservas
+            {pista?.reserva?.length || 0} reservas
           </Typography>
           <Typography variant="body1">{eventos.length} eventos</Typography>
           <Stack>
             <Typography variant="body2">
-              {pista.valoracion.length} Valoraciones
+              {pista?.valoracion?.length} Valoraciones
             </Typography>
-            {pista.valoracion.length > 0 && (
+            {pista?.valoracion?.length > 0 && (
               <Rating
                 name="half-rating-read"
                 defaultValue={4.4}

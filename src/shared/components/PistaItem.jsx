@@ -24,12 +24,12 @@ export const PistaItem = ({ pista }) => {
   useEffect(() => {
     setMediaValoracion(0);
 
-    if (pista.valoracion.length > 0) {
+    if (pista?.valoracion?.length > 0) {
       const media = pista.valoracion.reduce((acc, valoracion) => {
         return acc + valoracion.puntuacion;
       }, 0);
 
-      setMediaValoracion(media / pista.valoracion.length);
+      setMediaValoracion(media / pista?.valoracion?.length);
     }
   }, []);
 
@@ -108,7 +108,7 @@ export const PistaItem = ({ pista }) => {
                     size="small"
                   />
                   <Typography variant="body2" fontWeight={300}>
-                    ({pista.valoracion.length})
+                    ({pista?.valoracion?.length || 0})
                   </Typography>
                 </Stack>
               )}
