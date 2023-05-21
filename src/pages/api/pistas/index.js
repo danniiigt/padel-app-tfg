@@ -33,8 +33,6 @@ const handlePostPista = async (req, res) => {
     horarioApertura,
   } = req.body;
 
-  console.log(req.body);
-
   if (
     !nombre ||
     !descripcion ||
@@ -115,8 +113,6 @@ const handlePutPista = async (req, res) => {
 
   if (tipo == "EliminarImagen") {
     if (imageUrl && pistaId) {
-      console.log("entro");
-
       try {
         const { imagenes } = await prisma.pista.findUnique({
           where: {
@@ -192,8 +188,6 @@ const handlePutPista = async (req, res) => {
       res.status(500).json({ error: "Error en el servidor. Prueba más tarde" });
     }
   } else if (tipo == "ActualizarInformacion") {
-    console.log(req.body);
-
     if (
       !pistaId ||
       !nombre ||
@@ -202,7 +196,6 @@ const handlePutPista = async (req, res) => {
       !ubicacionLongitud ||
       !horarioApertura
     ) {
-      console.log("aqui");
       res.status(400).json({ error: "Faltan campos por añadir" });
       return;
     }

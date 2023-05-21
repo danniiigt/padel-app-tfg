@@ -86,7 +86,6 @@ export const sendMail = async (emailTo, subject, title, body, userName) => {
 
   try {
     const result = await transporter.sendMail(message);
-    console.log(result);
     return {
       ok: true,
     };

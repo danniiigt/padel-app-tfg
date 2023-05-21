@@ -83,6 +83,7 @@ const RankingPage = ({ user }) => {
                 maxWidth: "100%",
                 maxHeight: "150px",
                 objectFit: "contain",
+                marginLeft: "-50px",
               },
             }}
           >
@@ -200,6 +201,7 @@ const RankingPage = ({ user }) => {
                 maxHeight: "180px",
                 objectFit: "contain",
                 transform: "scaleX(-1)",
+                marginLeft: "-60px",
               },
             }}
           >

@@ -1,3 +1,4 @@
+import { LoadingButton } from "@mui/lab";
 import {
   Button,
   Dialog,
@@ -8,7 +9,7 @@ import {
   Divider,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 
 export const ReservarDialog = ({
   mostrar,
@@ -17,6 +18,8 @@ export const ReservarDialog = ({
   onClose,
   handleReservarPista,
 }) => {
+  const [loading, setLoading] = useState(false);
+
   return (
     <Dialog
       open={mostrar}
@@ -73,17 +76,21 @@ export const ReservarDialog = ({
       <Divider />
 
       <DialogActions>
-        <Button variant="" onClick={onClose}>
+        <LoadingButton loading={loading} variant="" onClick={onClose}>
           Cancelar
-        </Button>
-        <Button
-          onClick={() => handleReservarPista(pista.eventoId)}
+        </LoadingButton>
+        <LoadingButton
+          loading={loading}
+          onClick={() => {
+            setLoading(true);
+            handleReservarPista(pista.eventoId);
+          }}
           color="primary"
           variant="contained"
           autoFocus
         >
           Reservar
-        </Button>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

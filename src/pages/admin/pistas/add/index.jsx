@@ -10,6 +10,7 @@ import {
   StepLabel,
   Stepper,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { MainLayout } from "../../../../shared/layouts/MainLayout";
@@ -31,16 +32,9 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 import EuroIcon from "@mui/icons-material/Euro";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import Map from "@/shared/components/Map";
-import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
-import EventOutlinedIcon from "@mui/icons-material/EventOutlined";
-import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
-import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined";
-import DeleteIcon from "@mui/icons-material/Delete";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 const AddPista = ({ user, step }) => {
   user = JSON.parse(user);
@@ -312,6 +306,11 @@ const AddPista = ({ user, step }) => {
                         backgroundColor: "#f9f9f9",
                       },
                     }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        paddingRight: "0px !important",
+                      },
+                    }}
                     value={pistaForm.ubicacionLatitud}
                     onChange={(e) => {
                       if (isNaN(e.target.value)) return;
@@ -319,6 +318,22 @@ const AddPista = ({ user, step }) => {
                         ...pistaForm,
                         ubicacionLatitud: e.target.value,
                       });
+                    }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="start">
+                          <Tooltip title="¿Donde la consigo?">
+                            <Link
+                              href="https://support.google.com/maps/answer/18539?co=GENIE.Platform%3DDesktop&hl=es-MX#:~:text=C%C3%B3mo%20obtener%20las%20coordenadas%20de,decimal%20en%20la%20parte%20superior."
+                              target="_blank"
+                            >
+                              <IconButton sx={{ ml: 1 }}>
+                                <QuestionMarkIcon fontSize="small" />
+                              </IconButton>
+                            </Link>
+                          </Tooltip>
+                        </InputAdornment>
+                      ),
                     }}
                   />
                   <TextField
@@ -332,6 +347,11 @@ const AddPista = ({ user, step }) => {
                         backgroundColor: "#f9f9f9",
                       },
                     }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        paddingRight: "0px !important",
+                      },
+                    }}
                     value={pistaForm.ubicacionLongitud}
                     onChange={(e) => {
                       // LET INTRODUCE '-' '.' AND NUMBERS
@@ -340,6 +360,22 @@ const AddPista = ({ user, step }) => {
                         ...pistaForm,
                         ubicacionLongitud: e.target.value,
                       });
+                    }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="start">
+                          <Tooltip title="¿Donde la consigo?">
+                            <Link
+                              href="https://support.google.com/maps/answer/18539?co=GENIE.Platform%3DDesktop&hl=es-MX#:~:text=C%C3%B3mo%20obtener%20las%20coordenadas%20de,decimal%20en%20la%20parte%20superior."
+                              target="_blank"
+                            >
+                              <IconButton sx={{ ml: 1 }}>
+                                <QuestionMarkIcon fontSize="small" />
+                              </IconButton>
+                            </Link>
+                          </Tooltip>
+                        </InputAdornment>
+                      ),
                     }}
                   />
                 </Stack>

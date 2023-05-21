@@ -25,7 +25,7 @@ const HomePage = ({ user, pistas }) => {
             <Stack spacing={1} direction="row" alignItems="center">
               <StarIcon color="primary" fontSize="small" />
               <Typography variant="body2" fontWeight={300}>
-                Hay un total de 192 pistas
+                Hay un total de {pistas.length} pistas disponibles
               </Typography>
             </Stack>
           </Box>
@@ -38,18 +38,6 @@ const HomePage = ({ user, pistas }) => {
             </Grid>
           ))}
         </Grid>
-
-        <Stack mt={4}>
-          <Box>
-            <Typography variant="h4">Pistas cerca de ti</Typography>
-            <Stack spacing={1} direction="row" alignItems="center">
-              <NearMeIcon color="primary" fontSize="small" />
-              <Typography variant="body2" fontWeight={300}>
-                En un radio entre 0.5km y 2.5km
-              </Typography>
-            </Stack>
-          </Box>
-        </Stack>
       </MainLayout>
     </>
   );
@@ -78,6 +66,10 @@ export const getServerSideProps = async (ctx) => {
   const pistas = await prisma.pista.findMany({
     where: {
       activa: true,
+    },
+
+    include: {
+      valoracion: true,
     },
   });
 

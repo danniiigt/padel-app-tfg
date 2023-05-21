@@ -32,6 +32,7 @@ import DoneAllIcon from "@mui/icons-material/DoneAll";
 import { useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
 export const AdminNavbar = ({ user, breadcrumbsItems, message }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -275,6 +276,12 @@ export const AdminNavbar = ({ user, breadcrumbsItems, message }) => {
                     <DashboardIcon sx={{ mr: 2 }} />
                   </ListItemIcon>
                   <ListItemText>Panel Control</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => handleRedirect("/banco")}>
+                  <ListItemIcon>
+                    <AccountBalanceWalletIcon sx={{ mr: 2 }} />
+                  </ListItemIcon>
+                  <ListItemText>Banco</ListItemText>
                 </MenuItem>
 
                 <Divider sx={{ marginY: "3px !important" }} />

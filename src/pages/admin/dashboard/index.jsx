@@ -9,11 +9,16 @@ import prisma from "../../../../lib/prisma";
 import { Charts } from "../../../shared/components/Charts";
 import { DashboardButtons } from "../../../shared/components/DashboardButtons";
 import { DashboardRegistros } from "../../../shared/components/DashboardRegistros";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-const AdminPage = ({ user, registros }) => {
-  user = JSON.parse(user);
-  registros = JSON.parse(registros);
+const AdminPage = ({
+  user: userProps,
+  registros: registrosProps,
+  pistas: pistasProps,
+}) => {
+  const [user, setUser] = useState(JSON.parse(userProps));
+  const [registros, setRegistros] = useState(JSON.parse(registrosProps));
+  const [pistas, setPistas] = useState(JSON.parse(pistasProps));
 
   useEffect(() => {
     document.title = "Panel De Control - Padel App";
@@ -110,19 +115,18 @@ const AdminPage = ({ user, registros }) => {
         </Stack>
       </Stack>
 
-      <Charts />
+      <Charts pistas={pistas} />
 
       <DashboardButtons />
 
       <Grid container mt={1} mb={4} spacing={3}>
         <Grid
           item
-          xs={8}
+          xs={12}
           className="animate__animated animate__fadeIn delay-1125"
         >
           <DashboardRegistros registros={registros} />
         </Grid>
-        <Grid item xs={4}></Grid>
       </Grid>
     </MainLayout>
   );
@@ -157,6 +161,26 @@ export const getServerSideProps = async (ctx) => {
     },
   });
 
+  const pistasUsuario = await prisma.pista.findMany({
+    where: {
+      usuarioId: user.id,
+      activa: true,
+    },
+
+    include: {
+      reserva: {
+        include: {
+          evento: true,
+          usuario: true,
+        },
+
+        orderBy: {
+          fecha: "asc",
+        },
+      },
+    },
+  });
+
   if (user.role == "SUPERADMIN") {
     return { redirect: { destination: "/superadmin" } };
   }
@@ -169,6 +193,7 @@ export const getServerSideProps = async (ctx) => {
     props: {
       user: JSON.stringify(user),
       registros: JSON.stringify(registros),
+      pistas: JSON.stringify(pistasUsuario),
     },
   };
 };

@@ -39,29 +39,12 @@ export const NotAuthNavbar = ({ message }) => {
               >
                 <Link
                   href="/home"
-                  style={{ color: "inherit", textDecoration: "none" }}
-                >
-                  Inicio
-                </Link>
-              </Typography>
-              <Typography
-                variant="body2"
-                color="#d9d9d9"
-                sx={{
-                  "&:hover": {
-                    color: "white",
-                  },
-                  transition: "all 0.3s ease",
-                }}
-              >
-                <Link
-                  href="/buscador"
                   style={{
                     color: "inherit",
                     textDecoration: "none",
                   }}
                 >
-                  Buscador
+                  Pistas
                 </Link>
               </Typography>
             </Stack>

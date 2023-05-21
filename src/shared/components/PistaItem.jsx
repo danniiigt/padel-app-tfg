@@ -3,21 +3,35 @@ import {
   Card,
   CardActionArea,
   IconButton,
+  Rating,
   Stack,
   Tooltip,
   Typography,
 } from "@mui/material";
-import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 export const PistaItem = ({ pista }) => {
+  const [mediaValoracion, setMediaValoracion] = useState(0);
   const router = useRouter();
 
   const handleRedirect = () => {
     router.push(`/home/pistas/${pista.id}`);
   };
+
+  useEffect(() => {
+    setMediaValoracion(0);
+
+    if (pista.valoracion.length > 0) {
+      const media = pista.valoracion.reduce((acc, valoracion) => {
+        return acc + valoracion.puntuacion;
+      }, 0);
+
+      setMediaValoracion(media / pista.valoracion.length);
+    }
+  }, []);
 
   return (
     <Card
@@ -86,9 +100,15 @@ export const PistaItem = ({ pista }) => {
               </Typography>
               {pista.ubicacionLatitud && pista.ubicacionLongitud && (
                 <Stack direction="row" alignItems="center" gap={0.5}>
-                  <LocationOnOutlinedIcon sx={{ fontSize: "15px" }} />
+                  <Rating
+                    name="read-only"
+                    value={mediaValoracion}
+                    precision={0.1}
+                    readOnly
+                    size="small"
+                  />
                   <Typography variant="body2" fontWeight={300}>
-                    A 0.8km de tu ubicación
+                    ({pista.valoracion.length})
                   </Typography>
                 </Stack>
               )}

@@ -25,6 +25,8 @@ export const DashboardBancoReservas = ({ reservas }) => {
           borderRadius: "0 0 4px 4px",
           boxShadow:
             "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+          maxHeight: 200,
+          overflowY: "auto",
         }}
         divider={
           <Divider
@@ -42,7 +44,17 @@ export const DashboardBancoReservas = ({ reservas }) => {
               direction="row"
               justifyContent="space-between"
             >
-              <Stack direction="row" spacing={2}>
+              <Stack
+                direction="row"
+                spacing={2}
+                divider={
+                  <Divider
+                    orientation="vertical"
+                    sx={{ borderColor: "#e4e4e4" }}
+                    flexItem
+                  />
+                }
+              >
                 {reserva.tipo == "Reserva de pista" && (
                   <Typography variant="body2" color="error">
                     -{" "}
@@ -62,6 +74,10 @@ export const DashboardBancoReservas = ({ reservas }) => {
                     }).format(reserva.amount)}
                   </Typography>
                 )}
+
+                <Typography variant="body2" fontWeight={300}>
+                  {reserva?.reserva?.pista?.nombre}
+                </Typography>
 
                 <Typography
                   variant="body2"

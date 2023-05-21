@@ -1,8 +1,12 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 
 const ErrorPage = () => {
+  useEffect(() => {
+    document.title = "404 - Padel App";
+  }, []);
+
   return (
     <>
       <Stack

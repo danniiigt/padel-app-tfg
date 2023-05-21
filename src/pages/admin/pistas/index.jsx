@@ -87,6 +87,10 @@ const PistasPage = ({ user, pistas, eventos, reservas }) => {
     },
   ];
 
+  const getPistasReservas = () => {
+    return pistas.map((pista) => pista.reserva.length);
+  };
+
   useEffect(() => {
     document.title = "Pistas - Padel App";
   }, []);
@@ -223,16 +227,12 @@ const PistasPage = ({ user, pistas, eventos, reservas }) => {
               <Box sx={{ maxWidth: 150 }}>
                 <Doughnut
                   data={{
-                    labels: [
-                      "Reservas Pista 1",
-                      "Reservas Pista 2",
-                      "Reservas Pista 3",
-                    ],
+                    labels: getPistasNombres(),
                     datasets: [
                       {
-                        label: "Reservas de esta semana",
-                        data: [3, 5, 6],
-                        backgroundColor: ["#1f1f1f", "#FFC914", "#3454D1"],
+                        label: "Reservas totales",
+                        data: getPistasReservas(),
+                        backgroundColor: ["#1f1f1f", "#3454D1"],
                       },
                     ],
                   }}
@@ -392,6 +392,8 @@ export const getServerSideProps = async (ctx) => {
           },
         },
       },
+
+      reserva: true,
     },
   });
 

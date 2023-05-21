@@ -65,25 +65,6 @@ export const authOptions = {
     signIn: async ({ user, account, profile, email, credentials }) => {
       return true;
     },
-    // redirect: async ({ url, baseUrl }) => {
-    //   console.log("REDIRECT MADERFAKUER");
-    //   console.log({ url });
-    //   console.log({ baseUrl });
-
-    //   const params = new URLSearchParams(new URL(url).search);
-    //   const callbackUrl = params.get("callbackUrl");
-
-    //   if (url.startsWith(baseUrl)) {
-    //     if (callbackUrl?.startsWith("/")) {
-    //       return baseUrl + callbackUrl;
-    //     } else if (callbackUrl?.startsWith(baseUrl)) {
-    //       return callbackUrl;
-    //     }
-    //   } else {
-    //     return Promise.resolve(baseUrl);
-    //   }
-    //   // return Promise.resolve(url.startsWith(baseUrl) ? url : baseUrl);
-    // },
     // Getting the JWT token from API response
     jwt: async ({ token, user, account, profile, isNewUser }) => {
       const isSigningIn = user ? true : false;

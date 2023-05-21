@@ -121,12 +121,12 @@ model Registro {
 }
 
 model Valoracion {
-    id         String @id @default(cuid())
+    id         String  @id @default(cuid())
     texto      String
-    puntuacion Int
-    usuario    User   @relation(fields: [usuarioId], references: [id])
+    puntuacion Decimal
+    usuario    User    @relation(fields: [usuarioId], references: [id])
     usuarioId  String
-    pista      Pista  @relation(fields: [pistaId], references: [id])
+    pista      Pista   @relation(fields: [pistaId], references: [id])
     pistaId    String
 }
 

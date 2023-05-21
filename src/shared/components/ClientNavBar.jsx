@@ -77,13 +77,13 @@ export const ClientNavBar = ({ user, message }) => {
                 }}
               >
                 <Link
-                  href="/buscador"
+                  href="/home"
                   style={{
                     color: "inherit",
                     textDecoration: "none",
                   }}
                 >
-                  Buscador
+                  Pistas
                 </Link>
               </Typography>
               <Typography
@@ -155,11 +155,12 @@ export const ClientNavBar = ({ user, message }) => {
               alignItems="center"
               spacing={2}
             >
-              <Tooltip title="Notificaciones">
-                <IconButton sx={{ color: "#eeee", mr: 1 }}>
-                  <Badge badgeContent={3} color="secondary">
-                    <NotificationsIcon />
-                  </Badge>
+              <Tooltip title="Mis reservas">
+                <IconButton
+                  sx={{ color: "#eeee", mr: 1 }}
+                  onClick={() => handleRedirect("/misreservas")}
+                >
+                  <ConfirmationNumberIcon />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Tu perfil">

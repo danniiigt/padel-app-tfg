@@ -139,7 +139,7 @@ const BancoPage = ({
         </Grid>
       </Grid>
 
-      <Grid container mt={1} spacing={3}>
+      <Grid container mt={1} mb={5} spacing={3}>
         <Grid item xs={6}>
           <DashboardDepositos depositos={transaccionesDepositos} />
         </Grid>
@@ -204,6 +204,14 @@ export const getServerSideProps = async (ctx) => {
       usuarioId: user.id,
       tipo: {
         in: ["Pago de reserva", "Reserva de pista"],
+      },
+    },
+
+    include: {
+      reserva: {
+        include: {
+          pista: true,
+        },
       },
     },
 

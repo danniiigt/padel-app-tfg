@@ -21,7 +21,37 @@ ChartJS.register(
   ArcElement
 );
 
-export const Charts = () => {
+export const Charts = ({ pistas }) => {
+  const getPistasReservas = () => {
+    return pistas.map((pista) => pista.reserva.length);
+  };
+
+  const getPistasNombres = () => {
+    return pistas.map((pista) => pista.nombre);
+  };
+
+  const getReservas7Dias = () => {
+    const reservas = [];
+
+    for (let i = 0; i < 7; i++) {
+      const fecha = new Date();
+      fecha.setDate(fecha.getDate() - i);
+      const dia = fecha.getDay();
+
+      const reservasDia = pistas.reduce((acc, pista) => {
+        const reservas = pista.reserva.filter(
+          (reserva) => new Date(reserva.fecha).getDay() === dia
+        );
+
+        return acc + reservas.length;
+      }, 0);
+
+      reservas.push(reservasDia);
+    }
+
+    return reservas;
+  };
+
   return (
     <Grid
       className="animate__animated animate__fadeIn"
@@ -43,24 +73,19 @@ export const Charts = () => {
           <Bar
             data={{
               labels: [
-                "Lunes",
-                "Martes",
-                "Miércoles",
-                "Jueves",
-                "Viernes",
-                "Sábado",
-                "Domingo",
+                new Date().getDate() - 6 + "/" + (new Date().getMonth() + 1),
+                new Date().getDate() - 5 + "/" + (new Date().getMonth() + 1),
+                new Date().getDate() - 4 + "/" + (new Date().getMonth() + 1),
+                new Date().getDate() - 3 + "/" + (new Date().getMonth() + 1),
+                new Date().getDate() - 2 + "/" + (new Date().getMonth() + 1),
+                new Date().getDate() - 1 + "/" + (new Date().getMonth() + 1),
+                new Date().getDate() + "/" + (new Date().getMonth() + 1),
               ],
               datasets: [
                 {
-                  label: "Reservas de esta semana",
-                  data: [12, 19, 7, 11, 5, 9, 10],
-                  backgroundColor: "#3454D1",
-                },
-                {
-                  label: "Reservas de la semana pasada",
-                  data: [2, 18, 5, 5, 2, 3, 10],
-                  backgroundColor: "#FFC914",
+                  label: "Reservas ultimos 7 días",
+                  data: getReservas7Dias().reverse(),
+                  backgroundColor: ["#1f1f1f", "#3454D1"],
                 },
               ],
             }}
@@ -89,16 +114,12 @@ export const Charts = () => {
         >
           <Doughnut
             data={{
-              labels: [
-                "Reservas Pista 1",
-                "Reservas Pista 2",
-                "Reservas Pista 3",
-              ],
+              labels: getPistasNombres(),
               datasets: [
                 {
-                  label: "Reservas de esta semana",
-                  data: [3, 5, 6],
-                  backgroundColor: ["#1f1f1f", "#FFC914", "#3454D1"],
+                  label: "Reservas totales",
+                  data: getPistasReservas(),
+                  backgroundColor: ["#1f1f1f", "#3454D1"],
                 },
               ],
             }}

@@ -45,4 +45,33 @@
    animation-delay: 1375ms;
 }
 
+.delay-1500 {
+   animation-delay: 1500ms;
+}
 
+.delay-1625 {
+   animation-delay: 1625ms;
+}
+
+.delay-1750 {
+   animation-delay: 1750ms;
+}
+
+
+.fadeIn-bg::before {
+   background-color: rgba(0,0,0,0.7);
+}
+
+@keyframes shine {
+   0% {
+      background-position: 0;
+   }
+
+   60% {
+      background-position: 600px;
+   }
+
+   100% {
+      background-position: 600px;
+   }
+}

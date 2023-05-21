@@ -4,10 +4,12 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Avatar,
   Box,
   Button,
   Chip,
   Divider,
+  Grid,
   Rating,
   Stack,
   TextField,
@@ -33,15 +35,47 @@ import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import PhoneEnabledIcon from "@mui/icons-material/PhoneEnabled";
 import Link from "next/link";
+import Map from "@/shared/components/Map";
+import StarIcon from "@mui/icons-material/Star";
 
 const PistaPage = ({ user: userProps, pista: pistaProps }) => {
   const [user, setUser] = useState(JSON.parse(userProps));
   const [pista, setPista] = useState(JSON.parse(pistaProps));
+  const [reseñaValue, setReseñaValue] = useState(0);
+  const [reseñaTexto, setReseñaTexto] = useState("");
+  const [mediaReseña, setMediaReseña] = useState(0);
 
-  console.log(pista);
   const [precioMinimo, setPrecioMinimo] = useState(0);
   const [pistaSeleccionada, setPistaSeleccionada] = useState(null);
   const bannerHeight = 240;
+
+  const handlePublicarReseña = async () => {
+    const res = await fetch(`/api/valoraciones`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        texto: reseñaTexto,
+        puntuacion: Number(reseñaValue),
+        usuarioId: user.id,
+        pistaId: pista.id,
+      }),
+    });
+
+    const dataValoracion = await res.json();
+
+    if (res.status == 200) {
+      toast.success("Reseña publicada correctamente");
+      setReseñaTexto("");
+      setReseñaValue(0);
+
+      setPista({
+        ...pista,
+        valoracion: [...pista.valoracion, dataValoracion],
+      });
+    }
+  };
 
   const closeReservar = () => {
     setPistaSeleccionada(null);
@@ -131,6 +165,15 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
     });
     setPrecioMinimo(precioMinimo);
   }, []);
+
+  useEffect(() => {
+    let suma = 0;
+    pista.valoracion?.forEach((valoracion) => {
+      suma += valoracion.puntuacion;
+    });
+
+    setMediaReseña(suma / pista.valoracion?.length);
+  }, [pista.valoracion]);
 
   return (
     <MainLayout user={user}>
@@ -268,7 +311,12 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
               </Box>
 
               <Stack direction="row" spacing={1} alignItems="center">
-                <Rating name="read-only" value={0} readOnly />
+                <Rating
+                  name="read-only"
+                  value={mediaReseña}
+                  precision={0.01}
+                  readOnly
+                />
                 <Typography variant="body2">
                   ({pista.valoracion.length})
                 </Typography>
@@ -326,7 +374,6 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
                         omitZeroMinute: false,
                         meridiem: "short",
                       }}
-                      firstDay={1}
                       headerToolbar={{
                         left: "timeGridDay,timeGridThreeDay,timeGridWeek",
                         right: "prev,next",
@@ -369,7 +416,14 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
                 sx={{
                   backgroundColor: "#fafafa",
                 }}
-              ></AccordionDetails>
+              >
+                {pista?.ubicacionLatitud && pista?.ubicacionLongitud && (
+                  <Map
+                    lat={Number(pista.ubicacionLatitud)}
+                    lng={Number(pista.ubicacionLongitud)}
+                  />
+                )}
+              </AccordionDetails>
             </Accordion>
             <Accordion elevation={0}>
               <AccordionSummary
@@ -386,55 +440,133 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
               </AccordionSummary>
               <Divider />
               <AccordionDetails sx={{ backgroundColor: "#fafafa", padding: 3 }}>
-                <Stack spacing={1}>
-                  <TextField
-                    fullWidth
-                    multiline
-                    rows={4}
-                    variant="outlined"
-                    placeholder="Escribe que opinas de esta pista. ¿Te ha gustado? ¿Repetirías?. Tu opinión es importante para nosotros."
-                    label="Reseña"
-                    InputProps={{
-                      style: {
-                        backgroundColor: "white",
-                      },
-                    }}
-                    InputLabelProps={{
-                      shrink: true,
-                      style: {},
-                    }}
-                  />
-
-                  <Stack direction="row" spacing={1}>
-                    <Stack
-                      alignItems="center"
-                      sx={{
-                        p: 1,
-                        backgroundColor: "background.paper",
-                        width: "fit-content",
-                        border: "1px solid rgba(0, 0, 0, 0.23)",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      <Rating
-                        name="simple-controlled"
-                        value={4}
-                        // onChange={(event, newValue) => {
-                        //   setValue(newValue);
-                        // }}
+                {pista.valoracion.filter((v) => v.usuarioId == user.id)
+                  .length == 0 ? (
+                  <>
+                    <Typography mb={3} fontWeight={400}>
+                      ¡Publica tu reseña antes de poder ver el resto!
+                    </Typography>
+                    <Stack spacing={1}>
+                      <TextField
+                        fullWidth
+                        multiline
+                        rows={4}
+                        variant="outlined"
+                        placeholder="Escribe que opinas de esta pista. ¿Te ha gustado? ¿Repetirías?. Tu opinión es importante para nosotros."
+                        value={reseñaTexto}
+                        onChange={(e) => setReseñaTexto(e.target.value)}
+                        label="Reseña"
+                        InputProps={{
+                          style: {
+                            backgroundColor: "white",
+                          },
+                        }}
+                        InputLabelProps={{
+                          shrink: true,
+                          style: {},
+                        }}
                       />
-                    </Stack>
 
-                    <Button
-                      variant="contained"
-                      size="large"
-                      disableElevation
-                      fullWidth
-                    >
-                      Publicar Reseña
-                    </Button>
-                  </Stack>
-                </Stack>
+                      <Stack direction="row" spacing={1}>
+                        <Stack
+                          alignItems="center"
+                          sx={{
+                            p: 1,
+                            backgroundColor: "background.paper",
+                            width: "fit-content",
+                            border: "1px solid rgba(0, 0, 0, 0.23)",
+                            borderRadius: "4px",
+                          }}
+                        >
+                          <Rating
+                            name="simple-controlled"
+                            value={reseñaValue}
+                            onChange={(event, newValue) => {
+                              setReseñaValue(newValue);
+                            }}
+                            // SET STEPS 0.5
+                            precision={0.5}
+
+                            // onChange={(event, newValue) => {
+                            //   setValue(newValue);
+                            // }}
+                          />
+                        </Stack>
+
+                        <Button
+                          variant="contained"
+                          size="large"
+                          disableElevation
+                          fullWidth
+                          onClick={handlePublicarReseña}
+                        >
+                          Publicar Reseña
+                        </Button>
+                      </Stack>
+                    </Stack>
+                  </>
+                ) : (
+                  <Grid container spacing={2}>
+                    {pista.valoracion.map((valoracion) => (
+                      <Grid item xs={6} key={valoracion.id}>
+                        <Box
+                          sx={{
+                            padding: "20px",
+                            backgroundColor: "background.paper",
+                            boxShadow:
+                              "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+                            borderRadius: "3px",
+                          }}
+                        >
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={3}
+                          >
+                            <Stack>
+                              <Avatar
+                                src={valoracion.usuario.image}
+                                alt={valoracion.usuario.name}
+                                sx={{ width: 53, height: 53 }}
+                              />
+                            </Stack>
+
+                            <Stack>
+                              <Typography
+                                variant="body2"
+                                fontSize={12}
+                                fontWeight={300}
+                              >
+                                {valoracion.usuario.name}
+                              </Typography>
+                              <Typography variant="body1">
+                                "{valoracion.texto}"
+                              </Typography>
+                              <Stack
+                                direction="row"
+                                spacing={0.5}
+                                alignItems="center"
+                              >
+                                <Typography
+                                  variant="body2"
+                                  fontSize={12}
+                                  fontWeight={300}
+                                >
+                                  {valoracion.puntuacion}/5
+                                </Typography>
+                                <StarIcon
+                                  fontSize="small"
+                                  sx={{ fontSize: 14 }}
+                                  color="primary"
+                                />
+                              </Stack>
+                            </Stack>
+                          </Stack>
+                        </Box>
+                      </Grid>
+                    ))}
+                  </Grid>
+                )}
               </AccordionDetails>
             </Accordion>
             <Accordion elevation={0}>
@@ -547,7 +679,11 @@ export const getServerSideProps = async (ctx) => {
         },
       },
 
-      valoracion: true,
+      valoracion: {
+        include: {
+          usuario: true,
+        },
+      },
     },
   });
 

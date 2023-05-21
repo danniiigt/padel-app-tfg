@@ -51,7 +51,7 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
     evento.end = new Date(evento.fechaFin);
     evento.title = evento.nombre + " - " + evento.precio + "€";
     //bg color
-    evento.backgroundColor = evento.ocupada ? "#e57373" : "#3454D1";
+    evento.backgroundColor = evento.ocupada ? "#D10000" : "#3454D1";
   });
 
   const [fechas, setFechas] = useState([null, null]);
@@ -466,7 +466,6 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
                       omitZeroMinute: false,
                       meridiem: "short",
                     }}
-                    firstDay={1}
                     headerToolbar={{
                       left: "timeGridDay,timeGridThreeDay,timeGridWeek",
                       right: "prev,next",

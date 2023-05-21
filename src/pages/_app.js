@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { Box, LinearProgress } from "@mui/material";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 function Loading() {
   const router = useRouter();
