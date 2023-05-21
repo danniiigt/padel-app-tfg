@@ -540,7 +540,7 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
                                 {valoracion.usuario.name}
                               </Typography>
                               <Typography variant="body1">
-                                "{valoracion.texto}"
+                                &quot;{valoracion.texto}&quot;
                               </Typography>
                               <Stack
                                 direction="row"
