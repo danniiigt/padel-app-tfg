@@ -17,12 +17,14 @@ import { signIn } from "next-auth/react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { useEffect, useState } from "react";
+import { LoadingButton } from "@mui/lab";
 
 const RegisterPage = () => {
   const [nameError, setNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [passwordConfirmError, setPasswordConfirmError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     document.title = "Registro - Padel App";
@@ -30,6 +32,7 @@ const RegisterPage = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setLoading(true);
     let errors = false;
 
     const data = new FormData(e.target);
@@ -58,7 +61,10 @@ const RegisterPage = () => {
       errors = true;
     }
 
-    if (errors) return;
+    if (errors) {
+      setLoading(false);
+      return;
+    }
 
     const res = await fetch(`/api/user/create`, {
       method: "POST",
@@ -77,6 +83,8 @@ const RegisterPage = () => {
         redirect: `${window.location.origin}/admin`,
       });
     }
+
+    setLoading(false);
   };
 
   const emailEnUso = async (email) => {
@@ -301,16 +309,17 @@ const RegisterPage = () => {
               }}
             />
 
-            <Button
+            <LoadingButton
               variant="contained"
               color="primary"
               fullWidth
               sx={{ borderRadius: 3 }}
               disableRipple
               type="submit"
+              loading={loading}
             >
               Crear cuenta
-            </Button>
+            </LoadingButton>
           </Stack>
         </Box>
       </Box>

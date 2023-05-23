@@ -82,6 +82,11 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
   };
 
   const handleReservarPista = async (idEvento) => {
+    if (user.saldo < pistaSeleccionada.precio) {
+      toast.error("No tienes suficiente saldo para reservar esta pista");
+      return;
+    }
+
     const res = await fetch(`/api/eventos/${idEvento}`, {
       method: "PUT",
       headers: {

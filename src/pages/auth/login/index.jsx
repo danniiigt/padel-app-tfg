@@ -17,11 +17,13 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { LoadingButton } from "@mui/lab";
 
 const LoginPage = () => {
   const router = useRouter();
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     document.title = "Iniciar Sesión - Padel App";
@@ -29,6 +31,7 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const data = new FormData(e.target);
@@ -44,6 +47,7 @@ const LoginPage = () => {
       if (res.status == 200) {
         router.push("/admin");
       } else {
+        setLoading(false);
         setEmailError(true);
         setPasswordError(true);
       }
@@ -203,16 +207,17 @@ const LoginPage = () => {
               }}
             />
 
-            <Button
+            <LoadingButton
               variant="contained"
               color="primary"
               fullWidth
               sx={{ borderRadius: 3 }}
               disableRipple
               type="submit"
+              loading={loading}
             >
               Iniciar Sesión
-            </Button>
+            </LoadingButton>
           </Stack>
         </Box>
       </Box>
