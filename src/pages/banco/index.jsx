@@ -191,7 +191,7 @@ export const getServerSideProps = async (ctx) => {
   const transaccionesRetiradas = await prisma.transaccion.findMany({
     where: {
       usuarioId: user.id,
-      tipo: "Retirada",
+      tipo: "Retiro",
     },
 
     orderBy: {

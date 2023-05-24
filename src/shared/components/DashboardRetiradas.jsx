@@ -2,6 +2,8 @@ import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 
 export const DashboardRetiradas = ({ retiradas }) => {
+  console.log(retiradas);
+
   return (
     <>
       <Box
