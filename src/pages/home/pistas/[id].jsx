@@ -82,7 +82,7 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
   };
 
   const handleReservarPista = async (idEvento) => {
-    if (user.saldo < pistaSeleccionada.precio) {
+    if (Number(pistaSeleccionada.precio) > Number(user.saldo)) {
       toast.error("No tienes suficiente saldo para reservar esta pista");
       return;
     }
@@ -319,7 +319,7 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
                 <Rating
                   name="read-only"
                   value={mediaReseña}
-                  precision={0.01}
+                  precision={0.1}
                   readOnly
                 />
                 <Typography variant="body2">
