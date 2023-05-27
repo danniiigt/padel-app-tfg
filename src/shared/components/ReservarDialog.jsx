@@ -9,7 +9,7 @@ import {
   Divider,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export const ReservarDialog = ({
   mostrar,
@@ -19,6 +19,10 @@ export const ReservarDialog = ({
   handleReservarPista,
 }) => {
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(false);
+  }, [mostrar]);
 
   return (
     <Dialog

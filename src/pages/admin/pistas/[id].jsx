@@ -558,7 +558,7 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
                     </ImageListItem>
                   ))}
                 </ImageList>
-                <Button
+                <LoadingButton
                   variant="contained"
                   component="label"
                   startIcon={<AddAPhotoIcon />}
@@ -570,7 +570,7 @@ const PistaPage = ({ user: userProps, pista: pistaProps }) => {
                     type="file"
                     onChange={handleImageUpload}
                   />
-                </Button>
+                </LoadingButton>
               </Stack>
             </AccordionDetails>
           </Accordion>
